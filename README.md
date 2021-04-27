@@ -7,6 +7,10 @@
 
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
 
+## Requirements
+
+Relay requires PHP `^8.0` or `^7.4`, and Laravel `^8.0`.
+
 ## Installation
 
 You can install the package via composer:
