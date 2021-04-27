@@ -1,17 +1,17 @@
 {
-    "name": "vendor_slug/package_slug",
-    "description": ":package_description",
+    "name": "thetreehouse/relay",
+    "description": "Synchronise your Laravel contacts and companies across your operational suite",
     "keywords": [
-        ":vendor_name",
+        "The Treehouse",
         "laravel",
-        "package_slug"
+        "relay"
     ],
-    "homepage": "https://github.com/vendor_slug/package_slug",
+    "homepage": "https://github.com/the-treehouse/relay",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Frank Dixon",
+            "email": "frank@thetreehouse.family",
             "role": "Developer"
         }
     ],
@@ -30,13 +30,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories"
+            "TheTreehouse\\Relay\\": "src",
+            "TheTreehouse\\Relay\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "TheTreehouse\\Relay\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -50,10 +50,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "TheTreehouse\\Relay\\RelayServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\SkeletonFacade"
+                "Relay": "TheTreehouse\\Relay\\RelayFacade"
             }
         }
     },
