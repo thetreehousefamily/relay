@@ -9,39 +9,41 @@ use TheTreehouse\Relay\Exceptions\InvalidProviderException;
 class Relay
 {
     /**
-     * The static list of registered providers
+     * The list of registered providers
      * 
      * @var string[] $providers
      */
-    protected static array $providers = [];
+    protected array $providers = [];
 
     /**
      * The contact model class
      * 
      * @var string|null $contactModel
      */
-    protected static $contactModel;
+    protected $contactModel;
 
     /**
      * The organization model class
      * 
      * @var string|null $organizationModel
      */
-    protected static $organizationModel;
+    protected $organizationModel;
 
     /**
      * Register a provider by its class name
      * 
      * @param string $class
-     * @return void
+     * @return static
      */
-    public static function registerProvider(string $class) : void
+    public function registerProvider(string $class): Relay
     {
-        if (!self::classExtendsParent($class, AbstractProvider::class)) {
+        if (!$this->classExtendsParent($class, AbstractProvider::class)) {
             throw InvalidProviderException::fromInvalidClass($class);
         }
 
-        self::$providers[] = $class;
+        $this->providers[] = $class;
+
+        return $this;
     }
 
     /**
@@ -49,9 +51,9 @@ class Relay
      * 
      * @return string[]
      */
-    public static function getRegisteredProviders() : array
+    public function getRegisteredProviders() : array
     {
-        return self::$providers;
+        return $this->providers;
     }
 
     /**
@@ -60,13 +62,13 @@ class Relay
      * @param string $class
      * @return void
      */
-    public static function useContactModel(string $class) : void
+    public function useContactModel(string $class) : void
     {
-        if (!self::classExtendsParent($class, Model::class)) {
+        if (!$this->classExtendsParent($class, Model::class)) {
             throw InvalidModelException::fromInvalidClass($class);
         }
 
-        self::$contactModel = $class;
+        $this->contactModel = $class;
     }
 
     /**
@@ -75,13 +77,13 @@ class Relay
      * @param string $class
      * @return void
      */
-    public static function useOrganizationModel(string $class): void
+    public function useOrganizationModel(string $class): void
     {
-        if (!self::classExtendsParent($class, Model::class)) {
+        if (!$this->classExtendsParent($class, Model::class)) {
             throw InvalidModelException::fromInvalidClass($class);
         }
 
-        self::$organizationModel = $class;
+        $this->organizationModel = $class;
     }
 
     /**
@@ -90,9 +92,9 @@ class Relay
      * 
      * @return null|string
      */
-    public static function contactModel() : ? string
+    public function contactModel() : ? string
     {
-        return self::$contactModel;
+        return $this->contactModel;
     }
 
     /**
@@ -101,9 +103,9 @@ class Relay
      * 
      * @return null|string
      */
-    public static function organizationModel() : ? string
+    public function organizationModel() : ? string
     {
-        return self::$organizationModel;
+        return $this->organizationModel;
     }
 
     /**
@@ -114,7 +116,7 @@ class Relay
      * @param string $parent
      * @return bool
      */
-    private static function classExtendsParent(string $class, string $parent) : bool
+    private function classExtendsParent(string $class, string $parent) : bool
     {
         return class_exists($class) && is_subclass_of($class, $parent);
     }
