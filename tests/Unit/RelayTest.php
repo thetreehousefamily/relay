@@ -3,6 +3,7 @@
 namespace TheTreehouse\Relay\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use TheTreehouse\Relay\AbstractProvider;
 use TheTreehouse\Relay\Exceptions\InvalidModelException;
 use TheTreehouse\Relay\Exceptions\InvalidProviderException;
@@ -12,6 +13,29 @@ use TheTreehouse\Relay\Tests\Fixtures\Models\Organization;
 
 class RelayTest extends TestCase
 {
+    private static $relayStaticProperties = [];
+
+    public static function setUpBeforeClass(): void
+    {
+        $reflection = new ReflectionClass(Relay::class);
+
+        self::$relayStaticProperties = $reflection->getStaticProperties();
+    }
+
+    public function tearDown(): void
+    {
+        $relayChild = new class extends Relay {
+            public static function reset(array $properties)
+            {
+                foreach ($properties as $key => $value) {
+                    self::$$key = $value;
+                }
+            }
+        };
+
+        $relayChild::reset(self::$relayStaticProperties);
+    }
+
     public function test_it_rejects_invalid_provider_registrations()
     {
         $invalidProvider = new class {};
