@@ -51,7 +51,7 @@ class Relay
      * 
      * @return string[]
      */
-    public function getRegisteredProviders() : array
+    public function getRegisteredProviders(): array
     {
         return $this->providers;
     }
@@ -60,39 +60,43 @@ class Relay
      * Use the given contact model
      * 
      * @param string $class
-     * @return void
+     * @return static
      */
-    public function useContactModel(string $class) : void
+    public function useContactModel(string $class): Relay
     {
         if (!$this->classExtendsParent($class, Model::class)) {
             throw InvalidModelException::fromInvalidClass($class);
         }
 
         $this->contactModel = $class;
+
+        return $this;
     }
 
     /**
      * Use the given organization model
      * 
      * @param string $class
-     * @return void
+     * @return static
      */
-    public function useOrganizationModel(string $class): void
+    public function useOrganizationModel(string $class): Relay
     {
         if (!$this->classExtendsParent($class, Model::class)) {
             throw InvalidModelException::fromInvalidClass($class);
         }
 
         $this->organizationModel = $class;
+
+        return $this;
     }
 
     /**
      * Return the configured contact model class name, or null if it does not exist or
      * is not supported by the application
      * 
-     * @return null|string
+     * @return string|null
      */
-    public function contactModel() : ? string
+    public function contactModel(): ? string
     {
         return $this->contactModel;
     }
@@ -101,9 +105,9 @@ class Relay
      * Return the configured organization model class name, or null if it does not exist
      * or is not supported by the application
      * 
-     * @return null|string
+     * @return string|null
      */
-    public function organizationModel() : ? string
+    public function organizationModel(): ? string
     {
         return $this->organizationModel;
     }

@@ -22,4 +22,11 @@ class RelayServiceProvider extends PackageServiceProvider
             ->hasMigration('create_relay_table')
             ->hasCommand(RelayCommand::class);
     }
+
+    public function packageRegistered()
+    {
+        $this->app->singleton(Relay::class);
+
+        $this->app->alias(Relay::class, 'relay');
+    }
 }
