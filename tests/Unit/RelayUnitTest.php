@@ -16,7 +16,8 @@ class RelayUnitTest extends TestCase
 
     public function test_it_rejects_invalid_provider_registrations()
     {
-        $invalidProvider = new class {};
+        $invalidProvider = new class {
+        };
 
         $this->expectException(InvalidProviderException::class);
 
@@ -49,7 +50,8 @@ class RelayUnitTest extends TestCase
 
     public function test_it_rejects_invalid_contact_model_registrations()
     {
-        $invalidModel = new class {};
+        $invalidModel = new class {
+        };
 
         $this->expectException(InvalidModelException::class);
 
@@ -67,7 +69,8 @@ class RelayUnitTest extends TestCase
 
     public function test_it_rejects_invalid_organization_model_registrations()
     {
-        $invalidModel = new class {};
+        $invalidModel = new class {
+        };
 
         $this->expectException(InvalidModelException::class);
 

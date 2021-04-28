@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @see \TheTreehouse\Relay\Relay
- * 
+ *
  * @method static \TheTreehouse\Relay\Relay registerProvider(string $class) Register a provider by its class name
  * @method static string[] getRegisteredProviders() Return the registered providers
  * @method static \TheTreehouse\Relay\Relay useContactModel(string $class) Use the given contact model

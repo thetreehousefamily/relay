@@ -9,7 +9,7 @@ class InvalidModelException extends RelayException
     /**
      * Return a new InvalidModelException instance from the provided invalid
      * class
-     * 
+     *
      * @param string $class
      * @return static
      */

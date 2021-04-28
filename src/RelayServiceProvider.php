@@ -35,8 +35,8 @@ class RelayServiceProvider extends PackageServiceProvider
     public function packageBooted()
     {
         /**
-         * Has the effect of initializing the singleton, if not already 
-         * 
+         * Has the effect of initializing the singleton, if not already
+         *
          * @var \TheTreehouse\Relay\Relay $relay
          */
         $relay = $this->app->make('relay');

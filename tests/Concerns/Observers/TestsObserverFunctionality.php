@@ -22,7 +22,7 @@ trait TestsObserverFunctionality
 
             $reflection = new ReflectionClosure($listener);
 
-            if (!isset(($useVariables = $reflection->getUseVariables())['listener'])) {
+            if (! isset(($useVariables = $reflection->getUseVariables())['listener'])) {
                 continue;
             }
 

@@ -9,7 +9,7 @@ class InvalidProviderException extends RelayException
     /**
      * Return a new InvalidProviderException instance from the provided invalid
      * class
-     * 
+     *
      * @param string $class
      * @return static
      */
