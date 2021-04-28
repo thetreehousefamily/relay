@@ -69,4 +69,26 @@ class RelayUnitTest extends TestCase
 
         $this->assertEquals(Organization::class, $relay->organizationModel());
     }
+
+    public function test_it_returns_correct_contacts_supported_value()
+    {
+        $relay = $this->newRelay();
+
+        $this->assertFalse($relay->supportsContacts());
+        
+        $relay->useContactModel(Contact::class);
+
+        $this->assertTrue($relay->supportsContacts());
+    }
+
+    public function test_it_returns_correct_organizations_supported_value()
+    {
+        $relay = $this->newRelay();
+
+        $this->assertFalse($relay->supportsOrganizations());
+        
+        $relay->useOrganizationModel(Organization::class);
+
+        $this->assertTrue($relay->supportsOrganizations());
+    }
 }

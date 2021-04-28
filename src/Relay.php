@@ -109,6 +109,28 @@ class Relay
     }
 
     /**
+     * Return a boolean value, indicating whether the application supports the contacts
+     * concept, depending on its configuration.
+     * 
+     * @return bool
+     */
+    public function supportsContacts(): bool
+    {
+        return (bool) $this->contactModel();
+    }
+
+    /**
+     * Return a boolean value, indicating whether the application supports the organizations
+     * concept, depending on its configuration.
+     * 
+     * @return bool
+     */
+    public function supportsOrganizations(): bool
+    {
+        return (bool) $this->organizationModel();
+    }
+
+    /**
      * Ensure that the provided class name exists, and is a subclass of the provided
      * parent class
      * 
