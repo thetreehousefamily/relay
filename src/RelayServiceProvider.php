@@ -5,6 +5,8 @@ namespace TheTreehouse\Relay;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use TheTreehouse\Relay\Commands\RelayCommand;
+use TheTreehouse\Relay\Observers\ContactObserver;
+use TheTreehouse\Relay\Observers\OrganizationObserver;
 
 class RelayServiceProvider extends PackageServiceProvider
 {
@@ -41,10 +43,12 @@ class RelayServiceProvider extends PackageServiceProvider
 
         if (config('relay.contact')) {
             $relay->useContactModel(config('relay.contact'));
+            config('relay.contact')::observe(ContactObserver::class);
         }
 
         if (config('relay.organization')) {
             $relay->useOrganizationModel(config('relay.organization'));
+            config('relay.organization')::observe(OrganizationObserver::class);
         }
     }
 }

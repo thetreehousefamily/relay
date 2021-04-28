@@ -24,9 +24,6 @@ class RelayTest extends TestCase
 
     public function test_it_uses_model_configuration()
     {
-        config(['relay.contact' => Contact::class]);
-        config(['relay.organization' => Organization::class]);
-
         $this->assertEquals(Contact::class, Relay::contactModel());
         $this->assertEquals(Organization::class, Relay::organizationModel());
     }
