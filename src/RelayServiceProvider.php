@@ -29,4 +29,22 @@ class RelayServiceProvider extends PackageServiceProvider
 
         $this->app->alias(Relay::class, 'relay');
     }
+
+    public function packageBooted()
+    {
+        /**
+         * Has the effect of initializing the singleton, if not already 
+         * 
+         * @var \TheTreehouse\Relay\Relay $relay
+         */
+        $relay = $this->app->make('relay');
+
+        if (config('relay.contact')) {
+            $relay->useContactModel(config('relay.contact'));
+        }
+
+        if (config('relay.organization')) {
+            $relay->useOrganizationModel(config('relay.organization'));
+        }
+    }
 }

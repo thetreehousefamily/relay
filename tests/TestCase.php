@@ -4,7 +4,10 @@ namespace TheTreehouse\Relay\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
+use TheTreehouse\Relay\Facades\Relay;
 use TheTreehouse\Relay\RelayServiceProvider;
+use TheTreehouse\Relay\Tests\Fixtures\Models\Contact;
+use TheTreehouse\Relay\Tests\Fixtures\Models\Organization;
 
 class TestCase extends Orchestra
 {
@@ -19,9 +22,17 @@ class TestCase extends Orchestra
 
     protected function getPackageProviders($app)
     {
+        $this->configureRelay();
+
         return [
             RelayServiceProvider::class,
         ];
+    }
+
+    protected function configureRelay()
+    {
+        config(['relay.contact' => Contact::class]);
+        config(['relay.organization' => Organization::class]);
     }
 
     public function getEnvironmentSetUp($app)
