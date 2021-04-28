@@ -43,12 +43,14 @@ class RelayServiceProvider extends PackageServiceProvider
 
         if (config('relay.contact')) {
             $relay->useContactModel(config('relay.contact'));
-            config('relay.contact')::observe(ContactObserver::class);
+
+            ((string) $relay->contactModel())::observe(ContactObserver::class);
         }
 
         if (config('relay.organization')) {
             $relay->useOrganizationModel(config('relay.organization'));
-            config('relay.organization')::observe(OrganizationObserver::class);
+
+            ((string) $relay->organizationModel())::observe(OrganizationObserver::class);
         }
     }
 }
