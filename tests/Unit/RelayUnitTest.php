@@ -34,6 +34,19 @@ class RelayUnitTest extends TestCase
         $this->assertContains(get_class($validProvider), $relay->getRegisteredProviders());
     }
 
+    public function test_it_does_not_re_register_valid_providers()
+    {
+        $validProvider = $this->createMock(AbstractProvider::class);
+
+        $relay = $this->newRelay();
+
+        $relay
+            ->registerProvider(get_class($validProvider))
+            ->registerProvider(get_class($validProvider));
+
+        $this->assertEquals([get_class($validProvider)], $relay->getRegisteredProviders());
+    }
+
     public function test_it_rejects_invalid_contact_model_registrations()
     {
         $invalidModel = new class {};

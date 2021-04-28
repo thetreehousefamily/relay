@@ -41,6 +41,10 @@ class Relay
             throw InvalidProviderException::fromInvalidClass($class);
         }
 
+        if (in_array($class, $this->providers)) {
+            return $this;
+        }
+
         $this->providers[] = $class;
 
         return $this;
