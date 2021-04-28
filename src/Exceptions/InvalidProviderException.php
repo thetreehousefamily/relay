@@ -7,7 +7,7 @@ use TheTreehouse\Relay\AbstractProvider;
 class InvalidProviderException extends RelayException
 {
     /**
-     * Return a new RelayException instance from the provided invalid
+     * Return a new InvalidProviderException instance from the provided invalid
      * class
      * 
      * @param string $class
