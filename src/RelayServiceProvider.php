@@ -28,8 +28,10 @@ class RelayServiceProvider extends PackageServiceProvider
     public function packageRegistered()
     {
         $this->app->singleton(Relay::class);
-
         $this->app->alias(Relay::class, 'relay');
+
+        $this->app->singleton(Dispatcher::class);
+        $this->app->alias(Dispatcher::class, 'relay.dispatcher');
     }
 
     public function packageBooted()

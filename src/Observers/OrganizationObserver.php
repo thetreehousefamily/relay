@@ -2,20 +2,25 @@
 
 namespace TheTreehouse\Relay\Observers;
 
-class OrganizationObserver
+use Illuminate\Database\Eloquent\Model;
+
+class OrganizationObserver extends AbstractObserver
 {
-    public function created()
+    /** @inheritdoc */
+    public function created(Model $model): void
     {
-        // ...
+        $this->dispatcher->relayCreatedOrganization($model);
     }
 
-    public function updated()
+    /** @inheritdoc */
+    public function updated(Model $model): void
     {
-        // ...
+        $this->dispatcher->relayUpdatedOrganization($model);
     }
 
-    public function deleted()
+    /** @inheritdoc */
+    public function deleted(Model $model): void
     {
-        // ...
+        $this->dispatcher->relayDeletedOrganization($model);
     }
 }
