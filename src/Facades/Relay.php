@@ -27,8 +27,8 @@ class Relay extends Facade
 
     /**
      * Swap the Relay instance to a fake
-     * 
-     * @return \TheTreehouse\Relay\Support\FakeRelay 
+     *
+     * @return \TheTreehouse\Relay\Support\FakeRelay
      */
     public static function fake()
     {

@@ -9,14 +9,14 @@ abstract class AbstractObserver
 {
     /**
      * The Relay Dispatcher instance
-     * 
+     *
      * @var \TheTreehouse\Relay\Dispatcher
      */
     protected Dispatcher $dispatcher;
 
     /**
      * Instantiate the observer
-     * 
+     *
      * @param \TheTreehouse\Relay\Dispatcher $dispatcher
      * @return void
      */
@@ -27,7 +27,7 @@ abstract class AbstractObserver
 
     /**
      * Relay the created model
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $model
      * @return void
      */
@@ -35,7 +35,7 @@ abstract class AbstractObserver
 
     /**
      * Relay the updated model
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $model
      * @return void
      */
@@ -43,7 +43,7 @@ abstract class AbstractObserver
 
     /**
      * Relay the deleted model
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $model
      * @return void
      */

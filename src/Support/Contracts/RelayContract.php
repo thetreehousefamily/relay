@@ -21,7 +21,7 @@ interface RelayContract
 
     /**
      * Shortcut for mapping the registered provider classes to resolved instances
-     * 
+     *
      * @return \TheTreehouse\Relay\AbstractProvider[]
      */
     public function getProviders(): array;

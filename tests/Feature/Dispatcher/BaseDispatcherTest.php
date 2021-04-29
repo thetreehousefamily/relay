@@ -12,21 +12,21 @@ abstract class BaseDispatcherTest extends TestCase
 {
     /**
      * The name of the entity, either Contact or Organization
-     * 
+     *
      * @var string
      */
     protected $entityName;
 
     /**
      * The model class of the entity, either Contact::class or Organization::class
-     * 
+     *
      * @var string
      */
     protected $entityModelClass;
 
     /**
      * The create job class for the entity, instantiated by Fake Provider
-     * 
+     *
      * @var string
      */
     protected $createJob;
@@ -56,7 +56,7 @@ abstract class BaseDispatcherTest extends TestCase
     public function test_it_does_not_relay_created_if_entity_already_exists()
     {
         $model = new $this->entityModelClass([
-            'fake_provider_id' => Str::random()
+            'fake_provider_id' => Str::random(),
         ]);
 
         $dispatcher = $this->newDispatcher();

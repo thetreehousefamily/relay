@@ -11,21 +11,21 @@ abstract class AbstractProvider
 {
     /**
      * The display name for this provider
-     * 
-     * @var string|null $name
+     *
+     * @var string|null
      */
     protected $name;
     
     /**
      * Determines whether this provider supports the contact entity
-     * 
+     *
      * @var bool
      */
     protected $supportsContacts = true;
 
     /**
      * Determines whether this provider supports the organizations entity
-     * 
+     *
      * @var bool
      */
     protected $supportsOrganizations = true;
@@ -35,8 +35,8 @@ abstract class AbstractProvider
      * the contact model which will hold the external identifier for this service. If
      * not provided, one will be automatically generated based on the implementing
      * class' name.
-     * 
-     * @var string|null $contactModelColumn
+     *
+     * @var string|null
      */
     protected $contactModelColumn;
 
@@ -45,8 +45,8 @@ abstract class AbstractProvider
      * the organization model which will hold the external identifier for this service. If
      * not provided, one will be automatically generated based on the implementing
      * class' name.
-     * 
-     * @var string|null $organizationModelColumn
+     *
+     * @var string|null
      */
     protected $organizationModelColumn;
 
@@ -54,8 +54,8 @@ abstract class AbstractProvider
      * If the provider supports contacts, the class of the create contact job. If not
      * provided, one will be automatically generated based on the implementing class'
      * name.
-     * 
-     * @var string|null $createContactJob
+     *
+     * @var string|null
      */
     protected $createContactJob;
 
@@ -63,19 +63,19 @@ abstract class AbstractProvider
      * If the provider supports organizations, the class of the create organization job.
      * If not provided, one will be automatically generated based on the implementing class'
      * name.
-     * 
-     * @var string|null $createOrganizationJob
+     *
+     * @var string|null
      */
     protected $createOrganizationJob;
 
     /**
      * Get the name of this provider
-     * 
+     *
      * @return string
      */
     public function name() : string
     {
-        if (!$this->name) {
+        if (! $this->name) {
             $this->name = (string) Str::of(get_called_class())
                 ->classBasename()
                 ->replace('Relay', '')
@@ -88,7 +88,7 @@ abstract class AbstractProvider
 
     /**
      * Determine if this provider supports the contact entity
-     * 
+     *
      * @return bool
      */
     public function supportsContacts(): bool
@@ -98,7 +98,7 @@ abstract class AbstractProvider
 
     /**
      * Determine if this provider supports the organizations entity
-     * 
+     *
      * @return bool
      */
     public function supportsOrganizations(): bool
@@ -108,7 +108,7 @@ abstract class AbstractProvider
 
     /**
      * Given a contact model instance, determine if it exists on the provider
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $contact
      * @return bool
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support contacts
@@ -122,7 +122,7 @@ abstract class AbstractProvider
 
     /**
      * Given an organization model instance, determine if it exists on the provider
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $organization
      * @return bool
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support organizations
@@ -137,7 +137,7 @@ abstract class AbstractProvider
     /**
      * Determine the database column name for storing the provider's id for the
      * contact record
-     * 
+     *
      * @return string
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support contacts
      */
@@ -145,7 +145,7 @@ abstract class AbstractProvider
     {
         $this->guardContactSupport();
 
-        if (!$this->contactModelColumn) {
+        if (! $this->contactModelColumn) {
             $this->contactModelColumn = $this->generateDefaultModelColumn();
         }
 
@@ -155,7 +155,7 @@ abstract class AbstractProvider
     /**
      * Determine the database column name for storing the provider's id for the
      * organization record
-     * 
+     *
      * @return string
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support organizations
      */
@@ -163,7 +163,7 @@ abstract class AbstractProvider
     {
         $this->guardOrganizationSupport();
 
-        if (!$this->organizationModelColumn) {
+        if (! $this->organizationModelColumn) {
             $this->organizationModelColumn = $this->generateDefaultModelColumn();
         }
 
@@ -172,7 +172,7 @@ abstract class AbstractProvider
 
     /**
      * Generate the default model column string for the provider
-     * 
+     *
      * @return string
      */
     private function generateDefaultModelColumn(): string
@@ -187,7 +187,7 @@ abstract class AbstractProvider
     /**
      * Return a job instance that will create the provided contact on the
      * provider's service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $contact
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support contacts
@@ -196,7 +196,7 @@ abstract class AbstractProvider
     {
         $this->guardContactSupport();
 
-        if (!$this->createContactJob) {
+        if (! $this->createContactJob) {
             $this->createContactJob = $this->guessNamespace()
                 . '\\Jobs\\'
                 . 'Create'
@@ -210,7 +210,7 @@ abstract class AbstractProvider
     /**
      * Return a job instance that will create the provided organization on the
      * provider's service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $organization
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support organizations
@@ -219,7 +219,7 @@ abstract class AbstractProvider
     {
         $this->guardOrganizationSupport();
 
-        if (!$this->createOrganizationJob) {
+        if (! $this->createOrganizationJob) {
             $this->createOrganizationJob = $this->guessNamespace()
                 . '\\Jobs\\'
                 . 'Create'
@@ -233,13 +233,13 @@ abstract class AbstractProvider
     /**
      * Throw a Provider Support exception if contacts are not supported by this
      * provider
-     * 
+     *
      * @return self
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException
      */
     protected function guardContactSupport(): self
     {
-        if (!$this->supportsContacts()) {
+        if (! $this->supportsContacts()) {
             throw ProviderSupportException::contactsNotSupported($this);
         }
 
@@ -249,13 +249,13 @@ abstract class AbstractProvider
     /**
      * Throw a Provider Support exception if organizations are not supported by this
      * provider
-     * 
+     *
      * @return self
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException
      */
     protected function guardOrganizationSupport(): self
     {
-        if (!$this->supportsOrganizations()) {
+        if (! $this->supportsOrganizations()) {
             throw ProviderSupportException::organizationsNotSupported($this);
         }
 
@@ -264,7 +264,7 @@ abstract class AbstractProvider
 
     /**
      * Guess the base namespace for the provider
-     * 
+     *
      * @return string
      */
     private function guessNamespace() : string

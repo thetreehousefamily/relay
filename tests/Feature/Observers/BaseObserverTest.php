@@ -5,29 +5,29 @@ namespace TheTreehouse\Relay\Tests\Feature\Observers;
 use Closure;
 use Illuminate\Events\Dispatcher as LaravelDispatcher;
 use ReflectionFunction;
-use TheTreehouse\Relay\Observers\AbstractObserver;
 use TheTreehouse\Relay\Dispatcher;
+use TheTreehouse\Relay\Observers\AbstractObserver;
 use TheTreehouse\Relay\Tests\TestCase;
 
 abstract class BaseObserverTest extends TestCase
 {
     /**
      * The string name of the entity, either 'Contact' or 'Organization'
-     * 
+     *
      * @var string
      */
     protected $entityName;
 
     /**
      * The class name of the observable model, either Contact::class or Organization::class
-     * 
+     *
      * @var string
      */
     protected $observableModel;
 
     /**
      * The class name of the subject observer class, either ContactObserver::class or OrganizationObserver::class
-     * 
+     *
      * @var string
      */
     protected $observer;
@@ -136,7 +136,7 @@ abstract class BaseObserverTest extends TestCase
             }
 
             if ($useVariables['listener'] === $classListener) {
-                if (!$assertIncludes) {
+                if (! $assertIncludes) {
                     $this->fail("Provided listeners includes unexpected class listener: $classListener");
                 }
                 
@@ -154,13 +154,13 @@ abstract class BaseObserverTest extends TestCase
     /**
      * Instantiate a new observer instance with the provided dispatcher, or resolve the dispatcher
      * instance from the service container if none provided
-     * 
+     *
      * @param \TheTreehouse\Relay\Dispatcher|\PHPUnit\Framework\MockObject\MockObject|null
      * @return \TheTreehouse\Relay\Observers\AbstractObserver
      */
     protected function newObserver($dispatcher = null): AbstractObserver
     {
-        if (!$dispatcher) {
+        if (! $dispatcher) {
             /** @var \TheTreehouse\Relay\Dispatcher $dispatcher */
             $dispatcher = $this->app->make('relay.dispatcher');
         }

@@ -49,7 +49,7 @@ class TestCase extends Orchestra
     protected function relayProviders(): array
     {
         return [
-            FakeProvider::class
+            FakeProvider::class,
         ];
     }
 
