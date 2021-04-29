@@ -11,6 +11,13 @@ class ContactObserverTest extends TestCase
 {
     use TestsObserverFunctionality;
 
+    protected function configureRelay()
+    {
+        if ($this->getName() !== 'test_it_doesnt_observe_model_events') {
+            return parent::configureRelay();
+        }
+    }
+
     public function test_it_observes_model_events()
     {
         $dispatcher = $this->getDispatcher();
@@ -26,6 +33,26 @@ class ContactObserverTest extends TestCase
         );
 
         $this->assertListenersIncludeClassListener(
+            $dispatcher->getListeners("eloquent.deleted: " . Contact::class),
+            ContactObserver::class . "@deleted"
+        );
+    }
+
+    public function test_it_doesnt_observe_model_events()
+    {
+        $dispatcher = $this->getDispatcher();
+
+        $this->assertListenersDoesntIncludeClassListener(
+            $dispatcher->getListeners("eloquent.created: " . Contact::class),
+            ContactObserver::class . "@created"
+        );
+
+        $this->assertListenersDoesntIncludeClassListener(
+            $dispatcher->getListeners("eloquent.updated: " . Contact::class),
+            ContactObserver::class . "@updated"
+        );
+
+        $this->assertListenersDoesntIncludeClassListener(
             $dispatcher->getListeners("eloquent.deleted: " . Contact::class),
             ContactObserver::class . "@deleted"
         );

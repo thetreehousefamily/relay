@@ -33,4 +33,25 @@ trait TestsObserverFunctionality
 
         $this->fail("Provided listeners does not include class listener: $classListener");
     }
+
+    protected function assertListenersDoesntIncludeClassListener(array $listeners, string $classListener)
+    {
+        foreach ($listeners as $listener) {
+            if (! $listener instanceof Closure) {
+                continue;
+            }
+
+            $reflection = new ReflectionClosure($listener);
+
+            if (! isset(($useVariables = $reflection->getUseVariables())['listener'])) {
+                continue;
+            }
+
+            if ($useVariables['listener'] === $classListener) {
+                $this->fail("Provided listeners includes unexpected class listener: $classListener");
+            }
+        }
+
+        return $this->assertTrue(true);
+    }
 }
