@@ -7,6 +7,7 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 use TheTreehouse\Relay\Commands\RelayCommand;
 use TheTreehouse\Relay\Observers\ContactObserver;
 use TheTreehouse\Relay\Observers\OrganizationObserver;
+use TheTreehouse\Relay\Support\Contracts\RelayContract;
 
 class RelayServiceProvider extends PackageServiceProvider
 {
@@ -27,8 +28,8 @@ class RelayServiceProvider extends PackageServiceProvider
 
     public function packageRegistered()
     {
-        $this->app->singleton(Relay::class);
-        $this->app->alias(Relay::class, 'relay');
+        $this->app->singleton(RelayContract::class, Relay::class);
+        $this->app->alias(RelayContract::class, 'relay');
 
         $this->app->singleton(Dispatcher::class);
         $this->app->alias(Dispatcher::class, 'relay.dispatcher');

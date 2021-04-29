@@ -3,8 +3,9 @@
 namespace TheTreehouse\Relay\Support;
 
 use TheTreehouse\Relay\Relay;
+use TheTreehouse\Relay\Support\Contracts\RelayContract;
 
-class FakeRelay
+class FakeRelay implements RelayContract
 {
     /**
      * The original Relay singleton instance
@@ -21,6 +22,13 @@ class FakeRelay
     protected bool $supportsContacts;
 
     /**
+     * Override fake value for supports organizations
+     * 
+     * @var bool|null
+     */
+    protected bool $supportsOrganizations;
+
+    /**
      * Instantiate the Fake Relay with the original instance, so that calls can be
      * proxied if not faked
      * 
@@ -30,6 +38,42 @@ class FakeRelay
     public function __construct(Relay $relay)
     {
         $this->relay = $relay;
+    }
+
+    /** @inheritdoc */
+    public function registerProvider(string $class): RelayContract
+    {
+        return $this->relay->registerProvider($class);
+    }
+    
+    /** @inheritdoc */
+    public function getRegisteredProviders(): array
+    {
+        return $this->relay->getRegisteredProviders();
+    }
+
+    /** @inheritdoc */
+    public function useContactModel(string $class): RelayContract
+    {
+        return $this->relay->useContactModel($class);
+    }
+
+    /** @inheritdoc */
+    public function useOrganizationModel(string $class): RelayContract
+    {
+        return $this->relay->useOrganizationModel($class);
+    }
+
+    /** @inheritdoc */
+    public function contactModel(): ?string
+    {
+        return $this->relay->contactModel();
+    }
+    
+    /** @inheritdoc */
+    public function organizationModel(): ?string
+    {
+        return $this->relay->organizationModel();
     }
 
     /**
@@ -45,11 +89,7 @@ class FakeRelay
         return $this;
     }
 
-    /**
-     * Override parent supportsContacts
-     * 
-     * @return bool
-     */
+    /** @inheritdoc */
     public function supportsContacts(): bool
     {
         if ($this->supportsContacts === null) {
@@ -57,5 +97,28 @@ class FakeRelay
         }
 
         return $this->supportsContacts;
+    }
+
+    /**
+     * Manually set the supports organizations value
+     * 
+     * @param bool $supportsOrganizations
+     * @return static
+     */
+    public function setSupportsOrganizations(bool $supportsOrganizations): self
+    {
+        $this->supportsOrganizations = $supportsOrganizations;
+
+        return $this;
+    }
+
+    /** @inheritdoc */
+    public function supportsOrganizations(): bool
+    {
+        if ($this->supportsOrganizations === null) {
+            return $this->relay->supportsOrganizations();
+        }
+
+        return $this->supportsOrganizations;
     }
 }

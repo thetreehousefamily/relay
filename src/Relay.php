@@ -5,8 +5,9 @@ namespace TheTreehouse\Relay;
 use Illuminate\Database\Eloquent\Model;
 use TheTreehouse\Relay\Exceptions\InvalidModelException;
 use TheTreehouse\Relay\Exceptions\InvalidProviderException;
+use TheTreehouse\Relay\Support\Contracts\RelayContract;
 
-class Relay
+class Relay implements RelayContract
 {
     /**
      * The list of registered providers
@@ -33,9 +34,9 @@ class Relay
      * Register a provider by its class name
      *
      * @param string $class
-     * @return static
+     * @return self
      */
-    public function registerProvider(string $class): Relay
+    public function registerProvider(string $class): self
     {
         if (! $this->classExtendsParent($class, AbstractProvider::class)) {
             throw InvalidProviderException::fromInvalidClass($class);
@@ -64,9 +65,9 @@ class Relay
      * Use the given contact model
      *
      * @param string $class
-     * @return static
+     * @return self
      */
-    public function useContactModel(string $class): Relay
+    public function useContactModel(string $class): self
     {
         if (! $this->classExtendsParent($class, Model::class)) {
             throw InvalidModelException::fromInvalidClass($class);
@@ -81,9 +82,9 @@ class Relay
      * Use the given organization model
      *
      * @param string $class
-     * @return static
+     * @return self
      */
-    public function useOrganizationModel(string $class): Relay
+    public function useOrganizationModel(string $class): self
     {
         if (! $this->classExtendsParent($class, Model::class)) {
             throw InvalidModelException::fromInvalidClass($class);

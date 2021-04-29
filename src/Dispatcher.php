@@ -3,9 +3,28 @@
 namespace TheTreehouse\Relay;
 
 use Illuminate\Database\Eloquent\Model;
+use TheTreehouse\Relay\Support\Contracts\RelayContract;
 
 class Dispatcher
 {
+    /**
+     * The Relay singleton instance
+     * 
+     * @var \TheTreehouse\Relay\Relay
+     */
+    protected RelayContract $relay;
+
+    /**
+     * Instantiate the Dispatcher singleton
+     * 
+     * @param \TheTreehouse\Relay\Support\Contracts\RelayContract $relay
+     * @return void
+     */
+    public function __construct(RelayContract $relay)
+    {
+        $this->relay = $relay;
+    }
+
     /**
      * Process the relay for a created contact
      * 

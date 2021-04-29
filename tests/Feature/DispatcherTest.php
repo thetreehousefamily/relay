@@ -4,6 +4,7 @@ namespace TheTreehouse\Relay\Tests\Feature;
 
 use TheTreehouse\Relay\Dispatcher;
 use TheTreehouse\Relay\Facades\Relay;
+use TheTreehouse\Relay\Tests\Fixtures\Models\Contact;
 use TheTreehouse\Relay\Tests\TestCase;
 
 class DispatcherTest extends TestCase
@@ -11,6 +12,10 @@ class DispatcherTest extends TestCase
     public function test_it_does_not_relay_created_if_entity_not_supported_by_application()
     {
         Relay::fake()->setSupportsContacts(false);
+
+        $dispatcher = $this->newDispatcher();
+
+        $dispatcher->relayCreatedContact(new Contact());
 
         $this->fakeProvider()->assertNoContactsCreated();
     }

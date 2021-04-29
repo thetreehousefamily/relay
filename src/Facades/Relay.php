@@ -3,6 +3,7 @@
 namespace TheTreehouse\Relay\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use TheTreehouse\Relay\Support\Contracts\RelayContract;
 use TheTreehouse\Relay\Support\FakeRelay;
 
 /**
@@ -21,13 +22,13 @@ class Relay extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'relay';
+        return RelayContract::class;
     }
 
     /**
      * Swap the Relay instance to a fake
      * 
-     * @return FakeRelay 
+     * @return \TheTreehouse\Relay\Support\FakeRelay 
      */
     public static function fake()
     {
