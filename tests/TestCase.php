@@ -3,13 +3,14 @@
 namespace TheTreehouse\Relay\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Bus;
 use Orchestra\Testbench\TestCase as Orchestra;
 use TheTreehouse\Relay\Facades\Relay;
 use TheTreehouse\Relay\RelayServiceProvider;
 use TheTreehouse\Relay\Tests\Concerns\ProvidesFakeProvider;
 use TheTreehouse\Relay\Tests\Fixtures\Models\Contact;
 use TheTreehouse\Relay\Tests\Fixtures\Models\Organization;
-use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider;
+use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\FakeProvider;
 
 class TestCase extends Orchestra
 {
@@ -26,6 +27,8 @@ class TestCase extends Orchestra
         foreach ($this->relayProviders() as $provider) {
             Relay::registerProvider($provider);
         }
+
+        Bus::fake();
     }
 
     protected function getPackageProviders($app)

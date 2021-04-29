@@ -5,6 +5,7 @@ namespace TheTreehouse\Relay;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use TheTreehouse\Relay\Exceptions\ProviderSupportException;
+use TheTreehouse\Relay\Support\Contracts\RelayJobContract;
 
 abstract class AbstractProvider
 {
@@ -48,6 +49,24 @@ abstract class AbstractProvider
      * @var string|null $organizationModelColumn
      */
     protected $organizationModelColumn;
+
+    /**
+     * If the provider supports contacts, the class of the create contact job. If not
+     * provided, one will be automatically generated based on the implementing class'
+     * name.
+     * 
+     * @var string|null $createContactJob
+     */
+    protected $createContactJob;
+
+    /**
+     * If the provider supports organizations, the class of the create organization job.
+     * If not provided, one will be automatically generated based on the implementing class'
+     * name.
+     * 
+     * @var string|null $createOrganizationJob
+     */
+    protected $createOrganizationJob;
 
     /**
      * Get the name of this provider
@@ -170,13 +189,22 @@ abstract class AbstractProvider
      * provider's service
      * 
      * @param \Illuminate\Database\Eloquent\Model $contact
+     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support contacts
      */
-    public function createContactJob(Model $contact)
+    public function createContactJob(Model $contact): RelayJobContract
     {
         $this->guardContactSupport();
 
-        return 'FIXME: This should return a job... Is this method abstract?';
+        if (!$this->createContactJob) {
+            $this->createContactJob = $this->guessNamespace()
+                . '\\Jobs\\'
+                . 'Create'
+                . Str::of($this->name())->studly()
+                . 'Contact';
+        }
+
+        return app($this->createContactJob, ['contact' => $contact]);
     }
 
     /**
@@ -184,13 +212,22 @@ abstract class AbstractProvider
      * provider's service
      * 
      * @param \Illuminate\Database\Eloquent\Model $organization
+     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support organizations
      */
-    public function createOrganizationJob(Model $organization)
+    public function createOrganizationJob(Model $organization): RelayJobContract
     {
         $this->guardOrganizationSupport();
-        
-        return 'FIXME: This should return a job... Is this method abstract?';
+
+        if (!$this->createOrganizationJob) {
+            $this->createOrganizationJob = $this->guessNamespace()
+                . '\\Jobs\\'
+                . 'Create'
+                . Str::of($this->name())->studly()
+                . 'Organization';
+        }
+
+        return app($this->createOrganizationJob, ['organization' => $organization]);
     }
 
     /**
@@ -223,5 +260,20 @@ abstract class AbstractProvider
         }
 
         return $this;
+    }
+
+    /**
+     * Guess the base namespace for the provider
+     * 
+     * @return string
+     */
+    private function guessNamespace() : string
+    {
+        $str = Str::of(get_called_class())
+            ->explode('\\');
+
+        $str->pop();
+
+        return (string) $str->join('\\');
     }
 }

@@ -3,7 +3,9 @@
 namespace TheTreehouse\Relay;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Bus\PendingDispatch;
 use TheTreehouse\Relay\Support\Contracts\RelayContract;
+use TheTreehouse\Relay\Support\Contracts\RelayJobContract;
 
 class Dispatcher
 {
@@ -43,7 +45,8 @@ class Dispatcher
             }
 
             $job = $provider->createContactJob($contact);
-            // $this->dispatch($job).......
+
+            $this->dispatch($job);
         }
 
         return $this;
@@ -89,7 +92,8 @@ class Dispatcher
             }
 
             $job = $provider->createOrganizationJob($organization);
-            // $this->dispatch($job).......
+            
+            $this->dispatch($job);
         }
         return $this;
     }
@@ -114,5 +118,16 @@ class Dispatcher
     public function relayDeletedOrganization(Model $organization): Dispatcher
     {
         return $this;
+    }
+
+    /**
+     * Dispatch the provided job instance
+     * 
+     * @param \TheTreehouse\Relay\Support\Contracts\RelayJobContract $job
+     * @return \Illuminate\Foundation\Bus\PendingDispatch
+     */
+    protected function dispatch(RelayJobContract $job): PendingDispatch
+    {
+        return new PendingDispatch($job);
     }
 }
