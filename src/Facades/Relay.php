@@ -3,6 +3,7 @@
 namespace TheTreehouse\Relay\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use TheTreehouse\Relay\Support\FakeRelay;
 
 /**
  * @see \TheTreehouse\Relay\Relay
@@ -21,5 +22,23 @@ class Relay extends Facade
     protected static function getFacadeAccessor()
     {
         return 'relay';
+    }
+
+    /**
+     * Swap the Relay instance to a fake
+     * 
+     * @return FakeRelay 
+     */
+    public static function fake()
+    {
+        $bound = static::getFacadeRoot();
+
+        if ($bound instanceof FakeRelay) {
+            return $bound;
+        }
+
+        static::swap($fake = new FakeRelay($bound));
+
+        return $fake;
     }
 }
