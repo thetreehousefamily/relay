@@ -62,6 +62,22 @@ class Relay implements RelayContract
     }
 
     /**
+     * Shortcut for mapping the registered provider classes to resolved instances
+     * 
+     * @return \TheTreehouse\Relay\AbstractProvider[]
+     */
+    public function getProviders(): array
+    {
+        $arr = [];
+
+        foreach ($this->getRegisteredProviders() as $providerClass) {
+            $arr[] = app($providerClass);
+        }
+
+        return $arr;
+    }
+
+    /**
      * Use the given contact model
      *
      * @param string $class

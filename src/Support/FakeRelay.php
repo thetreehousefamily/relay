@@ -53,6 +53,12 @@ class FakeRelay implements RelayContract
     }
 
     /** @inheritdoc */
+    public function getProviders(): array
+    {
+        return $this->relay->getProviders();
+    }
+
+    /** @inheritdoc */
     public function useContactModel(string $class): RelayContract
     {
         return $this->relay->useContactModel($class);

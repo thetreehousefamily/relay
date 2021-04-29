@@ -13,11 +13,18 @@ interface RelayContract
     public function registerProvider(string $class): self;
 
     /**
-     * Return the registered providers
+     * Return the registered provider classes
      *
      * @return string[]
      */
     public function getRegisteredProviders(): array;
+
+    /**
+     * Shortcut for mapping the registered provider classes to resolved instances
+     * 
+     * @return \TheTreehouse\Relay\AbstractProvider[]
+     */
+    public function getProviders(): array;
 
     /**
      * Use the given contact model
