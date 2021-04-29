@@ -38,7 +38,7 @@ class Dispatcher
         }
 
         foreach($this->relay->getProviders() as $provider) {
-            if (!$provider->supportsContacts()) {
+            if (!$provider->supportsContacts() || $provider->contactExists($contact)) {
                 continue;
             }
 
@@ -84,7 +84,7 @@ class Dispatcher
         }
 
         foreach($this->relay->getProviders() as $provider) {
-            if (!$provider->supportsOrganizations()) {
+            if (!$provider->supportsOrganizations() || $provider->organizationExists($organization)) {
                 continue;
             }
 

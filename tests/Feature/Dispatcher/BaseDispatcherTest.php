@@ -2,6 +2,7 @@
 
 namespace TheTreehouse\Relay\Tests\Feature\Dispatcher;
 
+use Illuminate\Support\Str;
 use TheTreehouse\Relay\Dispatcher;
 use TheTreehouse\Relay\Facades\Relay;
 use TheTreehouse\Relay\Tests\TestCase;
@@ -30,7 +31,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayCreated{$this->entityName}"}(new $this->entityModelClass);
 
-        $this->fakeProvider()->{"assertNo{$this->entityName}sCreated"}();
+        $this->assertNoEntitiesCreated();
     }
 
     public function test_it_does_not_relay_created_if_entity_not_supported_by_provider()
@@ -41,17 +42,21 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayCreated{$this->entityName}"}(new $this->entityModelClass);
 
-        $this->fakeProvider()->{"assertNo{$this->entityName}sCreated"}();
+        $this->assertNoEntitiesCreated();
     }
 
-    // public function test_it_does_not_relay_created_if_entity_already_exists()
-    // {
-    //     $dispatcher = $this->newDispatcher();
+    public function test_it_does_not_relay_created_if_entity_already_exists()
+    {
+        $model = new $this->entityModelClass([
+            'fake_provider_id' => Str::random()
+        ]);
 
-    //     $dispatcher->relayCreatedContact(new Contact());
+        $dispatcher = $this->newDispatcher();
 
-    //     $this->fakeProvider()->assertNoContactsCreated();
-    // }
+        $dispatcher->{"relayCreated{$this->entityName}"}($model);
+
+        $this->assertNoEntitiesCreated();
+    }
 
     // public function test_it_dispatches_create_job_from_provider()
     // {
@@ -78,5 +83,12 @@ abstract class BaseDispatcherTest extends TestCase
     private function newDispatcher(): Dispatcher
     {
         return $this->app->make(Dispatcher::class);
+    }
+
+    private function assertNoEntitiesCreated()
+    {
+        $this->fakeProvider()->{"assertNo{$this->entityName}sCreated"}();
+
+        return $this;
     }
 }
