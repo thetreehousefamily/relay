@@ -17,14 +17,14 @@ class FakeProvider extends AbstractProvider
 {
     /**
      * The contact records that would have been created
-     * 
+     *
      * @var \Illuminate\Database\Eloquent\Model[]
      */
     protected array $createdContacts = [];
 
     /**
      * The organization records that would have been created
-     * 
+     *
      * @var \Illuminate\Database\Eloquent\Model[]
      */
     protected array $createdOrganizations = [];
@@ -77,7 +77,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Manually override the contacts support
-     * 
+     *
      * @param bool $supportsContacts
      */
     public function setSupportsContacts(bool $supportsContacts): self
@@ -89,7 +89,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Manually override the organizations support
-     * 
+     *
      * @param bool $supportsOrganizations
      */
     public function setSupportsOrganizations(bool $supportsOrganizations): self
@@ -101,7 +101,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Return a stub job that would create a contact on this fictitious service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $contact
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      */
@@ -114,7 +114,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Return a stub job that would create an organization on this fictitious service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $organization
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      */
@@ -180,7 +180,7 @@ class FakeProvider extends AbstractProvider
     /**
      * Assert that a contact was created. Optionally, assert that the provided contact was
      * specifically created
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model|null $contact
      * @return static
      */
@@ -191,7 +191,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Assert that the provider was not asked to create any contacts
-     * 
+     *
      * @return static
      */
     public function assertNoContactsCreated(): self
@@ -202,7 +202,7 @@ class FakeProvider extends AbstractProvider
     /**
      * Assert that an organization was created. Optionally, assert that the provided organization
      * was specifically created
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model|null $organization
      * @return static
      */
@@ -213,7 +213,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Assert that the provider was not asked to create any organizations
-     * 
+     *
      * @return static
      */
     public function assertNoOrganizationsCreated(): self

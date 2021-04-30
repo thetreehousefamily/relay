@@ -11,14 +11,14 @@ class Dispatcher
 {
     /**
      * The Relay singleton instance
-     * 
+     *
      * @var \TheTreehouse\Relay\Relay
      */
     protected RelayContract $relay;
 
     /**
      * Instantiate the Dispatcher singleton
-     * 
+     *
      * @param \TheTreehouse\Relay\Support\Contracts\RelayContract $relay
      * @return void
      */
@@ -29,18 +29,18 @@ class Dispatcher
 
     /**
      * Process the relay for a created contact
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $contact
      * @return static
      */
     public function relayCreatedContact(Model $contact): Dispatcher
     {
-        if (!$this->relay->supportsContacts()) {
+        if (! $this->relay->supportsContacts()) {
             return $this;
         }
 
-        foreach($this->relay->getProviders() as $provider) {
-            if (!$provider->supportsContacts() || $provider->contactExists($contact)) {
+        foreach ($this->relay->getProviders() as $provider) {
+            if (! $provider->supportsContacts() || $provider->contactExists($contact)) {
                 continue;
             }
 
@@ -54,7 +54,7 @@ class Dispatcher
 
     /**
      * Process the relay for an updated contact
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $contact
      * @return static
      */
@@ -81,7 +81,7 @@ class Dispatcher
 
     /**
      * Process the relay for a deleted contact
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $contact
      * @return static
      */
@@ -106,18 +106,18 @@ class Dispatcher
 
     /**
      * Process the relay for a created organization
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $organization
      * @return static
      */
     public function relayCreatedOrganization(Model $organization): Dispatcher
     {
-        if (!$this->relay->supportsOrganizations()) {
+        if (! $this->relay->supportsOrganizations()) {
             return $this;
         }
 
-        foreach($this->relay->getProviders() as $provider) {
-            if (!$provider->supportsOrganizations() || $provider->organizationExists($organization)) {
+        foreach ($this->relay->getProviders() as $provider) {
+            if (! $provider->supportsOrganizations() || $provider->organizationExists($organization)) {
                 continue;
             }
 
@@ -125,12 +125,13 @@ class Dispatcher
             
             $this->dispatch($job);
         }
+
         return $this;
     }
 
     /**
      * Process the relay for an updated organization
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $organization
      * @return static
      */
@@ -157,7 +158,7 @@ class Dispatcher
 
     /**
      * Process the relay for a deleted organization
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $organization
      * @return static
      */
@@ -182,7 +183,7 @@ class Dispatcher
 
     /**
      * Dispatch the provided job instance
-     * 
+     *
      * @param \TheTreehouse\Relay\Support\Contracts\RelayJobContract $job
      * @return \Illuminate\Foundation\Bus\PendingDispatch
      */

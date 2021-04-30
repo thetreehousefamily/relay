@@ -9,21 +9,21 @@ class FakeRelay implements RelayContract
 {
     /**
      * The original Relay singleton instance
-     * 
+     *
      * @var \TheTreehouse\Relay\Relay
      */
     protected $relay;
 
     /**
      * Override fake value for supports contacts
-     * 
+     *
      * @var bool|null
      */
     protected bool $supportsContacts;
 
     /**
      * Override fake value for supports organizations
-     * 
+     *
      * @var bool|null
      */
     protected bool $supportsOrganizations;
@@ -31,7 +31,7 @@ class FakeRelay implements RelayContract
     /**
      * Instantiate the Fake Relay with the original instance, so that calls can be
      * proxied if not faked
-     * 
+     *
      * @param \TheTreehouse\Relay\Relay $relay
      * @return void
      */
@@ -84,7 +84,7 @@ class FakeRelay implements RelayContract
 
     /**
      * Manually set the supports contacts value
-     * 
+     *
      * @param bool $supportsContacts
      * @return static
      */
@@ -107,7 +107,7 @@ class FakeRelay implements RelayContract
 
     /**
      * Manually set the supports organizations value
-     * 
+     *
      * @param bool $supportsOrganizations
      * @return static
      */

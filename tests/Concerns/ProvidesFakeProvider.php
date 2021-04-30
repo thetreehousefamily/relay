@@ -19,8 +19,8 @@ trait ProvidesFakeProvider
 
     /**
      * Return the Fake Provider singleton
-     * 
-     * @return FakeProvider 
+     *
+     * @return FakeProvider
      */
     protected function fakeProvider(): FakeProvider
     {
