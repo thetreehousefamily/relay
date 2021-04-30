@@ -87,6 +87,24 @@ abstract class AbstractProvider
     protected $updateOrganizationJob;
 
     /**
+     * If the provider supports contacts, the class of the delete contact job. If not
+     * provided, one will be automatically generated based on the implementing class'
+     * name.
+     * 
+     * @var string|null
+     */
+    protected $deleteContactJob;
+
+    /**
+     * If the provider supports organizations, the class of the delete organization job.
+     * If not provided, one will be automatically generated based on the implementing class'
+     * name.
+     * 
+     * @var string|null
+     */
+    protected $deleteOrganizationJob;
+
+    /**
      * Get the name of this provider
      * 
      * @return string
@@ -252,6 +270,32 @@ abstract class AbstractProvider
     public function updateOrganizationJob(Model $organization): RelayJobContract
     {
         return $this->newJob('update', 'organization', $organization);
+    }
+
+    /**
+     * Return a job instance that will delete the provided contact on the
+     * provider's service
+     * 
+     * @param \Illuminate\Database\Eloquent\Model $contact
+     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support contacts
+     */
+    public function deleteContactJob(Model $contact): RelayJobContract
+    {
+        return $this->newJob('delete', 'contact', $contact);
+    }
+
+    /**
+     * Return a job instance that will delete the provided organization on the
+     * provider's service
+     * 
+     * @param \Illuminate\Database\Eloquent\Model $organization
+     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support organizations
+     */
+    public function deleteOrganizationJob(Model $organization): RelayJobContract
+    {
+        return $this->newJob('delete', 'organization', $organization);
     }
 
     /**

@@ -9,6 +9,8 @@ use TheTreehouse\Relay\Tests\Fixtures\Models\Contact;
 use TheTreehouse\Relay\Tests\Fixtures\Models\Organization;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\CreateFakeContact;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\CreateFakeOrganization;
+use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\DeleteFakeContact;
+use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\DeleteFakeOrganization;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\UpdateFakeContact;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\UpdateFakeOrganization;
 use TheTreehouse\Relay\Tests\TestCase;
@@ -245,6 +247,64 @@ class AbstractProviderTest extends TestCase
         );
     }
 
+    public function test_it_generates_predefined_delete_contact_job()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        $provider->deleteContactJob = DeleteFakeContact::class;
+
+        $job = $provider->deleteContactJob(new Contact);
+
+        $this->assertInstanceOf(DeleteFakeContact::class, $job);
+    }
+
+    public function test_it_correctly_guesses_delete_contact_job()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        try {
+            $message = "";
+
+            $provider->deleteContactJob(new Contact);
+        } catch (BindingResolutionException $exception) {
+            $message = $exception->getMessage();
+        }
+
+        $this->assertStringContainsString(
+            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\DeleteAbstractProviderImplementationContact',
+            $message
+        );
+    }
+
+    public function test_it_generates_predefined_delete_organization_job()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        $provider->deleteOrganizationJob = DeleteFakeOrganization::class;
+
+        $job = $provider->deleteOrganizationJob(new Organization);
+
+        $this->assertInstanceOf(DeleteFakeOrganization::class, $job);
+    }
+
+    public function test_it_correctly_guesses_delete_organization_job()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        try {
+            $message = "";
+
+            $provider->deleteOrganizationJob(new Organization);
+        } catch (BindingResolutionException $exception) {
+            $message = $exception->getMessage();
+        }
+
+        $this->assertStringContainsString(
+            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\DeleteAbstractProviderImplementationOrganization',
+            $message
+        );
+    }
+
     private function newAbstractProviderImplementation(): AbstractProvider
     {
         return new AbstractProviderImplementationRelay;
@@ -263,4 +323,6 @@ class AbstractProviderImplementationRelay extends AbstractProvider
     public $createOrganizationJob;
     public $updateContactJob;
     public $updateOrganizationJob;
+    public $deleteContactJob;
+    public $deleteOrganizationJob;
 }
