@@ -60,6 +60,22 @@ class Dispatcher
      */
     public function relayUpdatedContact(Model $contact): Dispatcher
     {
+        if (!$this->relay->supportsContacts()) {
+            return $this;
+        }
+
+        foreach($this->relay->getProviders() as $provider) {
+            if (!$provider->supportsContacts()) {
+                return $this;
+            }
+
+            $job = $provider->contactExists($contact)
+                ? $provider->updateContactJob($contact)
+                : $provider->createContactJob($contact);
+
+            $this->dispatch($job);
+        }
+
         return $this;
     }
 
@@ -106,6 +122,22 @@ class Dispatcher
      */
     public function relayUpdatedOrganization(Model $organization): Dispatcher
     {
+        if (!$this->relay->supportsOrganizations()) {
+            return $this;
+        }
+
+        foreach($this->relay->getProviders() as $provider) {
+            if (!$provider->supportsOrganizations()) {
+                return $this;
+            }
+
+            $job = $provider->organizationExists($organization)
+                ? $provider->updateOrganizationJob($organization)
+                : $provider->createOrganizationJob($organization);
+
+            $this->dispatch($job);
+        }
+
         return $this;
     }
 

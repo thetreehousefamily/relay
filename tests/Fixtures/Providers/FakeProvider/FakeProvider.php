@@ -8,6 +8,8 @@ use TheTreehouse\Relay\AbstractProvider;
 use TheTreehouse\Relay\Support\Contracts\RelayJobContract;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\CreateFakeContact;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\CreateFakeOrganization;
+use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\UpdateFakeContact;
+use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\UpdateFakeOrganization;
 
 class FakeProvider extends AbstractProvider
 {
@@ -25,11 +27,31 @@ class FakeProvider extends AbstractProvider
      */
     protected array $createdOrganizations = [];
 
+    /**
+     * The contact records that would have been updated
+     * 
+     * @var \Illuminate\Database\Eloquent\Model[]
+     */
+    protected array $updatedContacts = [];
+
+    /**
+     * The organization records that would have been updated
+     * 
+     * @var \Illuminate\Database\Eloquent\Model[]
+     */
+    protected array $updatedOrganizations = [];
+
     /** @inheritdoc */
     protected $createContactJob = CreateFakeContact::class;
 
     /** @inheritdoc */
     protected $createOrganizationJob = CreateFakeOrganization::class;
+
+    /** @inheritdoc */
+    protected $updateContactJob = UpdateFakeContact::class;
+
+    /** @inheritdoc */
+    protected $updateOrganizationJob = UpdateFakeOrganization::class;
 
     /**
      * Manually override the contacts support
@@ -79,6 +101,32 @@ class FakeProvider extends AbstractProvider
         $this->createdOrganizations[] = $organization;
 
         return parent::createOrganizationJob($organization);
+    }
+
+    /**
+     * Return a stub job that would update a contact on this fictitious service
+     * 
+     * @param \Illuminate\Database\Eloquent\Model $contact
+     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     */
+    public function updateContactJob(Model $contact): RelayJobContract
+    {
+        $this->updatedContacts[] = $contact;
+
+        return parent::updateContactJob($contact);
+    }
+
+    /**
+     * Return a stub job that would update an organization on this fictitious service
+     * 
+     * @param \Illuminate\Database\Eloquent\Model $organization
+     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     */
+    public function updateOrganizationJob(Model $organization): RelayJobContract
+    {
+        $this->updatedOrganizations[] = $organization;
+
+        return parent::updateOrganizationJob($organization);
     }
 
     /**
@@ -137,6 +185,66 @@ class FakeProvider extends AbstractProvider
     public function assertNoOrganizationsCreated(): self
     {
         PHPUnit::assertEmpty($this->createdOrganizations, 'Expected to create 0 organization records, actually created ' . count($this->createdOrganizations));
+
+        return $this;
+    }
+
+    /**
+     * Assert that a contact was updated. Optionally, assert that the provided contact was
+     * specifically updated
+     * 
+     * @param \Illuminate\Database\Eloquent\Model|null $contact
+     * @return static
+     */
+    public function assertContactUpdated($contact = null): self
+    {
+        PHPUnit::assertNotEmpty($this->updatedContacts, 'Expected to update at least 1 contact record, actually updated none');
+
+        if ($contact) {
+            PHPUnit::assertContains($contact, $this->updatedContacts, 'The expected contact was not updated');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assert that the provider was not asked to update any contacts
+     * 
+     * @return static
+     */
+    public function assertNoContactsUpdated(): self
+    {
+        PHPUnit::assertEmpty($this->updatedContacts, 'Expected to update 0 contact records, actually updated ' . count($this->updatedContacts));
+
+        return $this;
+    }
+
+    /**
+     * Assert that an organization was updated. Optionally, assert that the provided organization
+     * was specifically updated
+     * 
+     * @param \Illuminate\Database\Eloquent\Model|null $organization
+     * @return static
+     */
+    public function assertOrganizationUpdated($organization = null): self
+    {
+        PHPUnit::assertNotEmpty($this->updatedOrganizations, 'Expected to update at least 1 organization record, actually updated none');
+
+        if ($organization) {
+            PHPUnit::assertContains($organization, $this->updatedOrganizations, 'The expected organization was not updated');
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Assert that the provider was not asked to update any organizations
+     * 
+     * @return static
+     */
+    public function assertNoOrganizationsUpdated(): self
+    {
+        PHPUnit::assertEmpty($this->updatedOrganizations, 'Expected to update 0 organization records, actually updated ' . count($this->updatedOrganizations));
 
         return $this;
     }

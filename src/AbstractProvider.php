@@ -69,6 +69,24 @@ abstract class AbstractProvider
     protected $createOrganizationJob;
 
     /**
+     * If the provider supports contacts, the class of the update contact job. If not
+     * provided, one will be automatically generated based on the implementing class'
+     * name.
+     * 
+     * @var string|null $updateContactJob
+     */
+    protected $updateContactJob;
+
+    /**
+     * If the provider supports organizations, the class of the update organization job.
+     * If not provided, one will be automatically generated based on the implementing class'
+     * name.
+     * 
+     * @var string|null $updateOrganizationJob
+     */
+    protected $updateOrganizationJob;
+
+    /**
      * Get the name of this provider
      * 
      * @return string
@@ -228,6 +246,52 @@ abstract class AbstractProvider
         }
 
         return app($this->createOrganizationJob, ['organization' => $organization]);
+    }
+
+    /**
+     * Return a job instance that will update the provided contact on the
+     * provider's service
+     * 
+     * @param \Illuminate\Database\Eloquent\Model $contact
+     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support contacts
+     */
+    public function updateContactJob(Model $contact): RelayJobContract
+    {
+        $this->guardContactSupport();
+
+        if (!$this->updateContactJob) {
+            $this->updateContactJob = $this->guessNamespace()
+                . '\\Jobs\\'
+                . 'Update'
+                . Str::of($this->name())->studly()
+                . 'Contact';
+        }
+
+        return app($this->updateContactJob, ['contact' => $contact]);
+    }
+
+    /**
+     * Return a job instance that will create the provided organization on the
+     * provider's service
+     * 
+     * @param \Illuminate\Database\Eloquent\Model $organization
+     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support organizations
+     */
+    public function updateOrganizationJob(Model $organization): RelayJobContract
+    {
+        $this->guardOrganizationSupport();
+
+        if (!$this->updateOrganizationJob) {
+            $this->updateOrganizationJob = $this->guessNamespace()
+                . '\\Jobs\\'
+                . 'Update'
+                . Str::of($this->name())->studly()
+                . 'Organization';
+        }
+
+        return app($this->updateOrganizationJob, ['organization' => $organization]);
     }
 
     /**

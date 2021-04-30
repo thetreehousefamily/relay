@@ -31,6 +31,13 @@ abstract class BaseDispatcherTest extends TestCase
      */
     protected $createJob;
 
+    /**
+     * The update job class for the entity, instantiated by Fake Provider
+     * 
+     * @var string
+     */
+    protected $updateJob;
+
     public function test_it_does_not_relay_created_if_entity_not_supported_by_application()
     {
         Relay::fake()->{"setSupports{$this->entityName}s"}(false);
@@ -79,20 +86,55 @@ abstract class BaseDispatcherTest extends TestCase
         Bus::assertDispatched($this->createJob);
     }
 
-    // public function test_it_does_not_relay_updated_if_entity_not_supported()
-    // {
-    //     $this->assertTrue(true);
-    // }
+    public function test_it_does_not_relay_updated_if_entity_not_supported_by_application()
+    {
+        Relay::fake()->{"setSupports{$this->entityName}s"}(false);
 
-    // public function test_it_dispatches_create_job_on_relay_update_if_entity_does_not_yet_exist()
-    // {
-    //     $this->assertTrue(true);
-    // }
+        $dispatcher = $this->newDispatcher();
 
-    // public function test_it_dispatches_update_job_from_provider()
-    // {
-    //     $this->assertTrue(true);
-    // }
+        $dispatcher->{"relayUpdated{$this->entityName}"}(new $this->entityModelClass);
+
+        $this->assertNoEntitiesUpdated();
+    }
+
+    public function test_it_does_not_relay_updated_if_entity_not_supported_by_provider()
+    {
+        $this->fakeProvider()->{"setSupports{$this->entityName}s"}(false);
+
+        $dispatcher = $this->newDispatcher();
+
+        $dispatcher->{"relayUpdated{$this->entityName}"}(new $this->entityModelClass);
+
+        $this->assertNoEntitiesUpdated();
+    }
+
+    public function test_it_dispatches_create_job_on_relay_update_if_entity_does_not_yet_exist()
+    {
+        $model = new $this->entityModelClass;
+
+        $dispatcher = $this->newDispatcher();
+
+        $dispatcher->{"relayUpdated{$this->entityName}"}($model);
+
+        $this->assertEntityCreated($model);
+
+        Bus::assertDispatched($this->createJob);
+    }
+
+    public function test_it_dispatches_update_job_from_provider()
+    {
+        $model = new $this->entityModelClass([
+            'fake_provider_id' => Str::random()
+        ]);
+
+        $dispatcher = $this->newDispatcher();
+
+        $dispatcher->{"relayUpdated{$this->entityName}"}($model);
+
+        $this->assertEntityUpdated($model);
+
+        Bus::assertDispatched($this->updateJob);
+    }
 
     // TODO: Delete Tests
 
@@ -113,6 +155,22 @@ abstract class BaseDispatcherTest extends TestCase
     private function assertEntityCreated($entity = null)
     {
         $this->fakeProvider()->{"assert{$this->entityName}Created"}($entity);
+
+        return $this;
+    }
+
+    private function assertNoEntitiesUpdated()
+    {
+        $this->fakeProvider()->{"assertNo{$this->entityName}sUpdated"}();
+
+        Bus::assertNotDispatched($this->updateJob);
+
+        return $this;
+    }
+
+    private function assertEntityUpdated($entity = null)
+    {
+        $this->fakeProvider()->{"assert{$this->entityName}Updated"}($entity);
 
         return $this;
     }
