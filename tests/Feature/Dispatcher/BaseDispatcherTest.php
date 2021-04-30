@@ -33,14 +33,14 @@ abstract class BaseDispatcherTest extends TestCase
 
     /**
      * The update job class for the entity, instantiated by Fake Provider
-     * 
+     *
      * @var string
      */
     protected $updateJob;
 
     /**
      * The delete job class for the entity, instantiated by Fake Provider
-     * 
+     *
      * @var string
      */
     protected $deleteJob;
@@ -127,7 +127,7 @@ abstract class BaseDispatcherTest extends TestCase
     public function test_it_dispatches_update_job_from_provider()
     {
         $model = new $this->entityModelClass([
-            'fake_provider_id' => Str::random()
+            'fake_provider_id' => Str::random(),
         ]);
 
         $dispatcher = $this->newDispatcher();
@@ -173,7 +173,7 @@ abstract class BaseDispatcherTest extends TestCase
     public function test_it_dispatches_delete_job_from_provider()
     {
         $model = new $this->entityModelClass([
-            'fake_provider_id' => Str::random()
+            'fake_provider_id' => Str::random(),
         ]);
 
         $dispatcher = $this->newDispatcher();

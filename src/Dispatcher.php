@@ -60,12 +60,12 @@ class Dispatcher
      */
     public function relayUpdatedContact(Model $contact): Dispatcher
     {
-        if (!$this->relay->supportsContacts()) {
+        if (! $this->relay->supportsContacts()) {
             return $this;
         }
 
-        foreach($this->relay->getProviders() as $provider) {
-            if (!$provider->supportsContacts()) {
+        foreach ($this->relay->getProviders() as $provider) {
+            if (! $provider->supportsContacts()) {
                 return $this;
             }
 
@@ -87,12 +87,12 @@ class Dispatcher
      */
     public function relayDeletedContact(Model $contact): Dispatcher
     {
-        if (!$this->relay->supportsContacts()) {
+        if (! $this->relay->supportsContacts()) {
             return $this;
         }
 
-        foreach($this->relay->getProviders() as $provider) {
-            if (!$provider->supportsContacts()) {
+        foreach ($this->relay->getProviders() as $provider) {
+            if (! $provider->supportsContacts()) {
                 return $this;
             }
 
@@ -137,12 +137,12 @@ class Dispatcher
      */
     public function relayUpdatedOrganization(Model $organization): Dispatcher
     {
-        if (!$this->relay->supportsOrganizations()) {
+        if (! $this->relay->supportsOrganizations()) {
             return $this;
         }
 
-        foreach($this->relay->getProviders() as $provider) {
-            if (!$provider->supportsOrganizations()) {
+        foreach ($this->relay->getProviders() as $provider) {
+            if (! $provider->supportsOrganizations()) {
                 return $this;
             }
 
@@ -164,12 +164,12 @@ class Dispatcher
      */
     public function relayDeletedOrganization(Model $organization): Dispatcher
     {
-        if (!$this->relay->supportsOrganizations()) {
+        if (! $this->relay->supportsOrganizations()) {
             return $this;
         }
 
-        foreach($this->relay->getProviders() as $provider) {
-            if (!$provider->supportsOrganizations()) {
+        foreach ($this->relay->getProviders() as $provider) {
+            if (! $provider->supportsOrganizations()) {
                 return $this;
             }
 

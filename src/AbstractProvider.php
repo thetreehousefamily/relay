@@ -72,8 +72,8 @@ abstract class AbstractProvider
      * If the provider supports contacts, the class of the update contact job. If not
      * provided, one will be automatically generated based on the implementing class'
      * name.
-     * 
-     * @var string|null $updateContactJob
+     *
+     * @var string|null
      */
     protected $updateContactJob;
 
@@ -81,8 +81,8 @@ abstract class AbstractProvider
      * If the provider supports organizations, the class of the update organization job.
      * If not provided, one will be automatically generated based on the implementing class'
      * name.
-     * 
-     * @var string|null $updateOrganizationJob
+     *
+     * @var string|null
      */
     protected $updateOrganizationJob;
 
@@ -90,7 +90,7 @@ abstract class AbstractProvider
      * If the provider supports contacts, the class of the delete contact job. If not
      * provided, one will be automatically generated based on the implementing class'
      * name.
-     * 
+     *
      * @var string|null
      */
     protected $deleteContactJob;
@@ -99,7 +99,7 @@ abstract class AbstractProvider
      * If the provider supports organizations, the class of the delete organization job.
      * If not provided, one will be automatically generated based on the implementing class'
      * name.
-     * 
+     *
      * @var string|null
      */
     protected $deleteOrganizationJob;
@@ -236,7 +236,7 @@ abstract class AbstractProvider
     /**
      * Return a job instance that will create the provided organization on the
      * provider's service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $organization
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support organizations
@@ -249,7 +249,7 @@ abstract class AbstractProvider
     /**
      * Return a job instance that will update the provided contact on the
      * provider's service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $contact
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support contacts
@@ -275,7 +275,7 @@ abstract class AbstractProvider
     /**
      * Return a job instance that will delete the provided contact on the
      * provider's service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $contact
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support contacts
@@ -288,7 +288,7 @@ abstract class AbstractProvider
     /**
      * Return a job instance that will delete the provided organization on the
      * provider's service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $organization
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      * @throws \TheTreehouse\Relay\Exceptions\ProviderSupportException Thrown if the provider does not support organizations
@@ -301,7 +301,7 @@ abstract class AbstractProvider
     /**
      * Given an action and entity, instantiate and return the relevant job instance, guarding
      * for provider support.
-     * 
+     *
      * @param string $action
      * @param string $entity
      * @param \Illuminate\Database\Eloquent\Model $model
@@ -315,7 +315,7 @@ abstract class AbstractProvider
 
         $jobClassProperty = $action.ucfirst($entity).'Job';
 
-        if (!$this->{$jobClassProperty}) {
+        if (! $this->{$jobClassProperty}) {
             $this->{$jobClassProperty} = $this->guessJobName($action, $entity);
         }
 
@@ -356,7 +356,7 @@ abstract class AbstractProvider
 
     /**
      * Guess the job class name based on the provided entity and action
-     * 
+     *
      * @param string $action
      * @param string $entity
      * @return string

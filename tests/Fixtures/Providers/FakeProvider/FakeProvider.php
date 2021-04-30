@@ -31,28 +31,28 @@ class FakeProvider extends AbstractProvider
 
     /**
      * The contact records that would have been updated
-     * 
+     *
      * @var \Illuminate\Database\Eloquent\Model[]
      */
     protected array $updatedContacts = [];
 
     /**
      * The organization records that would have been updated
-     * 
+     *
      * @var \Illuminate\Database\Eloquent\Model[]
      */
     protected array $updatedOrganizations = [];
 
     /**
      * The contact records that would have been deleted
-     * 
+     *
      * @var \Illuminate\Database\Eloquent\Model[]
      */
     protected array $deletedContacts = [];
 
     /**
      * The organization records that would have been deleted
-     * 
+     *
      * @var \Illuminate\Database\Eloquent\Model[]
      */
     protected array $deletedOrganizations = [];
@@ -127,7 +127,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Return a stub job that would update a contact on this fictitious service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $contact
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      */
@@ -140,7 +140,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Return a stub job that would update an organization on this fictitious service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $organization
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      */
@@ -153,7 +153,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Return a stub job that would delete a contact on this fictitious service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $contact
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      */
@@ -166,7 +166,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Return a stub job that would delete an organization on this fictitious service
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $organization
      * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
      */
@@ -224,7 +224,7 @@ class FakeProvider extends AbstractProvider
     /**
      * Assert that a contact was updated. Optionally, assert that the provided contact was
      * specifically updated
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model|null $contact
      * @return static
      */
@@ -235,7 +235,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Assert that the provider was not asked to update any contacts
-     * 
+     *
      * @return static
      */
     public function assertNoContactsUpdated(): self
@@ -246,7 +246,7 @@ class FakeProvider extends AbstractProvider
     /**
      * Assert that an organization was updated. Optionally, assert that the provided organization
      * was specifically updated
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model|null $organization
      * @return static
      */
@@ -257,7 +257,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Assert that the provider was not asked to update any organizations
-     * 
+     *
      * @return static
      */
     public function assertNoOrganizationsUpdated(): self
@@ -268,7 +268,7 @@ class FakeProvider extends AbstractProvider
     /**
      * Assert that a contact was deleted. Optionally, assert that the provided contact was
      * specifically deleted
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model|null $contact
      * @return static
      */
@@ -279,7 +279,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Assert that the provider was not asked to delete any contacts
-     * 
+     *
      * @return static
      */
     public function assertNoContactsDeleted(): self
@@ -290,7 +290,7 @@ class FakeProvider extends AbstractProvider
     /**
      * Assert that an organization was deleted. Optionally, assert that the provided organization
      * was specifically deleted
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model|null $organization
      * @return static
      */
@@ -301,7 +301,7 @@ class FakeProvider extends AbstractProvider
 
     /**
      * Assert that the provider was not asked to delete any organizations
-     * 
+     *
      * @return static
      */
     public function assertNoOrganizationsDeleted(): self
