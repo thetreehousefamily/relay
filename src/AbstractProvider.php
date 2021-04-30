@@ -212,17 +212,7 @@ abstract class AbstractProvider
      */
     public function createContactJob(Model $contact): RelayJobContract
     {
-        $this->guardContactSupport();
-
-        if (!$this->createContactJob) {
-            $this->createContactJob = $this->guessNamespace()
-                . '\\Jobs\\'
-                . 'Create'
-                . Str::of($this->name())->studly()
-                . 'Contact';
-        }
-
-        return app($this->createContactJob, ['contact' => $contact]);
+        return $this->newJob('create', 'contact', $contact);
     }
 
     /**
@@ -235,17 +225,7 @@ abstract class AbstractProvider
      */
     public function createOrganizationJob(Model $organization): RelayJobContract
     {
-        $this->guardOrganizationSupport();
-
-        if (!$this->createOrganizationJob) {
-            $this->createOrganizationJob = $this->guessNamespace()
-                . '\\Jobs\\'
-                . 'Create'
-                . Str::of($this->name())->studly()
-                . 'Organization';
-        }
-
-        return app($this->createOrganizationJob, ['organization' => $organization]);
+        return $this->newJob('create', 'organization', $organization);
     }
 
     /**
@@ -258,17 +238,7 @@ abstract class AbstractProvider
      */
     public function updateContactJob(Model $contact): RelayJobContract
     {
-        $this->guardContactSupport();
-
-        if (!$this->updateContactJob) {
-            $this->updateContactJob = $this->guessNamespace()
-                . '\\Jobs\\'
-                . 'Update'
-                . Str::of($this->name())->studly()
-                . 'Contact';
-        }
-
-        return app($this->updateContactJob, ['contact' => $contact]);
+        return $this->newJob('update', 'contact', $contact);
     }
 
     /**
@@ -281,17 +251,31 @@ abstract class AbstractProvider
      */
     public function updateOrganizationJob(Model $organization): RelayJobContract
     {
-        $this->guardOrganizationSupport();
+        return $this->newJob('update', 'organization', $organization);
+    }
 
-        if (!$this->updateOrganizationJob) {
-            $this->updateOrganizationJob = $this->guessNamespace()
-                . '\\Jobs\\'
-                . 'Update'
-                . Str::of($this->name())->studly()
-                . 'Organization';
+    /**
+     * Given an action and entity, instantiate and return the relevant job instance, guarding
+     * for provider support.
+     * 
+     * @param string $action
+     * @param string $entity
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     */
+    private function newJob(string $action, string $entity, Model $model): RelayJobContract
+    {
+        $entity === 'contact'
+            ? $this->guardContactSupport()
+            : $this->guardOrganizationSupport();
+
+        $jobClassProperty = $action.ucfirst($entity).'Job';
+
+        if (!$this->{$jobClassProperty}) {
+            $this->{$jobClassProperty} = $this->guessJobName($action, $entity);
         }
 
-        return app($this->updateOrganizationJob, ['organization' => $organization]);
+        return app($this->{$jobClassProperty}, [$entity => $model]);
     }
 
     /**
@@ -324,6 +308,22 @@ abstract class AbstractProvider
         }
 
         return $this;
+    }
+
+    /**
+     * Guess the job class name based on the provided entity and action
+     * 
+     * @param string $action
+     * @param string $entity
+     * @return string
+     */
+    private function guessJobName(string $action, string $entity): string
+    {
+        return $this->guessNamespace()
+            . '\\Jobs\\'
+            . ucfirst($action)
+            . Str::of($this->name())->studly()
+            . ucfirst($entity);
     }
 
     /**

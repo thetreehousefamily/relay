@@ -9,6 +9,8 @@ use TheTreehouse\Relay\Tests\Fixtures\Models\Contact;
 use TheTreehouse\Relay\Tests\Fixtures\Models\Organization;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\CreateFakeContact;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\CreateFakeOrganization;
+use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\UpdateFakeContact;
+use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\UpdateFakeOrganization;
 use TheTreehouse\Relay\Tests\TestCase;
 
 class AbstractProviderTest extends TestCase
@@ -185,6 +187,64 @@ class AbstractProviderTest extends TestCase
         );
     }
 
+    public function test_it_generates_predefined_update_contact_job()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        $provider->updateContactJob = UpdateFakeContact::class;
+
+        $job = $provider->updateContactJob(new Contact);
+
+        $this->assertInstanceOf(UpdateFakeContact::class, $job);
+    }
+
+    public function test_it_correctly_guesses_update_contact_job()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        try {
+            $message = "";
+
+            $provider->updateContactJob(new Contact);
+        } catch (BindingResolutionException $exception) {
+            $message = $exception->getMessage();
+        }
+
+        $this->assertStringContainsString(
+            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\UpdateAbstractProviderImplementationContact',
+            $message
+        );
+    }
+
+    public function test_it_generates_predefined_update_organization_job()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        $provider->updateOrganizationJob = UpdateFakeOrganization::class;
+
+        $job = $provider->updateOrganizationJob(new Organization);
+
+        $this->assertInstanceOf(UpdateFakeOrganization::class, $job);
+    }
+
+    public function test_it_correctly_guesses_update_organization_job()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        try {
+            $message = "";
+
+            $provider->updateOrganizationJob(new Organization);
+        } catch (BindingResolutionException $exception) {
+            $message = $exception->getMessage();
+        }
+
+        $this->assertStringContainsString(
+            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\UpdateAbstractProviderImplementationOrganization',
+            $message
+        );
+    }
+
     private function newAbstractProviderImplementation(): AbstractProvider
     {
         return new AbstractProviderImplementationRelay;
@@ -201,4 +261,6 @@ class AbstractProviderImplementationRelay extends AbstractProvider
     public $organizationModelColumn;
     public $createContactJob;
     public $createOrganizationJob;
+    public $updateContactJob;
+    public $updateOrganizationJob;
 }
