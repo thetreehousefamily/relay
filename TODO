@@ -1,0 +1,5 @@
+# Todo
+
+- [ ] Process incoming create/update/delete
+    - How does the package retrieve the relevant model?
+    - Does it allow the application to work with the model before/after it has been actioned?
