@@ -89,8 +89,6 @@ abstract class BaseDispatcherTest extends TestCase
         $dispatcher->{"relayCreated{$this->entityName}"}($model);
 
         $this->assertEntityCreated($model);
-
-        Bus::assertDispatched($this->createJob);
     }
 
     public function test_it_does_not_relay_updated_if_entity_not_supported_by_application()
@@ -124,8 +122,6 @@ abstract class BaseDispatcherTest extends TestCase
         $dispatcher->{"relayUpdated{$this->entityName}"}($model);
 
         $this->assertEntityCreated($model);
-
-        Bus::assertDispatched($this->createJob);
     }
 
     public function test_it_dispatches_update_job_from_provider()
@@ -139,8 +135,6 @@ abstract class BaseDispatcherTest extends TestCase
         $dispatcher->{"relayUpdated{$this->entityName}"}($model);
 
         $this->assertEntityUpdated($model);
-
-        Bus::assertDispatched($this->updateJob);
     }
 
     public function test_it_does_not_relay_deleted_if_entity_not_supported_by_application()
@@ -187,8 +181,6 @@ abstract class BaseDispatcherTest extends TestCase
         $dispatcher->{"relayDeleted{$this->entityName}"}($model);
 
         $this->assertEntityDeleted($model);
-
-        Bus::assertDispatched($this->deleteJob);
     }
 
     private function newDispatcher(): Dispatcher
@@ -209,6 +201,8 @@ abstract class BaseDispatcherTest extends TestCase
     {
         $this->fakeProvider()->{"assert{$this->entityName}Created"}($entity);
 
+        Bus::assertDispatched($this->createJob);
+
         return $this;
     }
 
@@ -225,6 +219,8 @@ abstract class BaseDispatcherTest extends TestCase
     {
         $this->fakeProvider()->{"assert{$this->entityName}Updated"}($entity);
 
+        Bus::assertDispatched($this->updateJob);
+
         return $this;
     }
 
@@ -240,6 +236,8 @@ abstract class BaseDispatcherTest extends TestCase
     private function assertEntityDeleted($entity = null)
     {
         $this->fakeProvider()->{"assert{$this->entityName}Deleted"}($entity);
+
+        Bus::assertDispatched($this->deleteJob);
 
         return $this;
     }

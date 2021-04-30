@@ -186,13 +186,7 @@ class FakeProvider extends AbstractProvider
      */
     public function assertContactCreated($contact = null): self
     {
-        PHPUnit::assertNotEmpty($this->createdContacts, 'Expected to create at least 1 contact record, actually created none');
-
-        if ($contact) {
-            PHPUnit::assertContains($contact, $this->createdContacts, 'The expected contact was not created');
-        }
-
-        return $this;
+        return $this->assertEntityActioned('create', 'contact', $contact);
     }
 
     /**
@@ -202,9 +196,7 @@ class FakeProvider extends AbstractProvider
      */
     public function assertNoContactsCreated(): self
     {
-        PHPUnit::assertEmpty($this->createdContacts, 'Expected to create 0 contact records, actually created ' . count($this->createdContacts));
-
-        return $this;
+        return $this->assertNoEntitiesActioned('create', 'contact');
     }
 
     /**
@@ -216,13 +208,7 @@ class FakeProvider extends AbstractProvider
      */
     public function assertOrganizationCreated($organization = null): self
     {
-        PHPUnit::assertNotEmpty($this->createdOrganizations, 'Expected to create at least 1 organization record, actually created none');
-
-        if ($organization) {
-            PHPUnit::assertContains($organization, $this->createdOrganizations, 'The expected organization was not created');
-        }
-        
-        return $this;
+        return $this->assertEntityActioned('create', 'organization', $organization);
     }
 
     /**
@@ -232,9 +218,7 @@ class FakeProvider extends AbstractProvider
      */
     public function assertNoOrganizationsCreated(): self
     {
-        PHPUnit::assertEmpty($this->createdOrganizations, 'Expected to create 0 organization records, actually created ' . count($this->createdOrganizations));
-
-        return $this;
+        return $this->assertNoEntitiesActioned('create', 'organization');
     }
 
     /**
@@ -246,13 +230,7 @@ class FakeProvider extends AbstractProvider
      */
     public function assertContactUpdated($contact = null): self
     {
-        PHPUnit::assertNotEmpty($this->updatedContacts, 'Expected to update at least 1 contact record, actually updated none');
-
-        if ($contact) {
-            PHPUnit::assertContains($contact, $this->updatedContacts, 'The expected contact was not updated');
-        }
-
-        return $this;
+        return $this->assertEntityActioned('update', 'contact', $contact);
     }
 
     /**
@@ -262,9 +240,7 @@ class FakeProvider extends AbstractProvider
      */
     public function assertNoContactsUpdated(): self
     {
-        PHPUnit::assertEmpty($this->updatedContacts, 'Expected to update 0 contact records, actually updated ' . count($this->updatedContacts));
-
-        return $this;
+        return $this->assertNoEntitiesActioned('update', 'contact');
     }
 
     /**
@@ -276,13 +252,7 @@ class FakeProvider extends AbstractProvider
      */
     public function assertOrganizationUpdated($organization = null): self
     {
-        PHPUnit::assertNotEmpty($this->updatedOrganizations, 'Expected to update at least 1 organization record, actually updated none');
-
-        if ($organization) {
-            PHPUnit::assertContains($organization, $this->updatedOrganizations, 'The expected organization was not updated');
-        }
-        
-        return $this;
+        return $this->assertEntityActioned('update', 'organization', $organization);
     }
 
     /**
@@ -292,9 +262,7 @@ class FakeProvider extends AbstractProvider
      */
     public function assertNoOrganizationsUpdated(): self
     {
-        PHPUnit::assertEmpty($this->updatedOrganizations, 'Expected to update 0 organization records, actually updated ' . count($this->updatedOrganizations));
-
-        return $this;
+        return $this->assertNoEntitiesActioned('update', 'organization');
     }
 
     /**
@@ -306,13 +274,7 @@ class FakeProvider extends AbstractProvider
      */
     public function assertContactDeleted($contact = null): self
     {
-        PHPUnit::assertNotEmpty($this->deletedContacts, 'Expected to delete at least 1 contact record, actually deleted none');
-
-        if ($contact) {
-            PHPUnit::assertContains($contact, $this->deletedContacts, 'The expected contact was not deleted');
-        }
-
-        return $this;
+        return $this->assertEntityActioned('delete', 'contact', $contact);
     }
 
     /**
@@ -322,9 +284,7 @@ class FakeProvider extends AbstractProvider
      */
     public function assertNoContactsDeleted(): self
     {
-        PHPUnit::assertEmpty($this->deletedContacts, 'Expected to delete 0 contact records, actually deleted ' . count($this->deletedContacts));
-
-        return $this;
+        return $this->assertNoEntitiesActioned('delete', 'contact');
     }
 
     /**
@@ -336,13 +296,7 @@ class FakeProvider extends AbstractProvider
      */
     public function assertOrganizationDeleted($organization = null): self
     {
-        PHPUnit::assertNotEmpty($this->deletedOrganizations, 'Expected to delete at least 1 organization record, actually deleted none');
-
-        if ($organization) {
-            PHPUnit::assertContains($organization, $this->deletedOrganizations, 'The expected organization was not updated');
-        }
-        
-        return $this;
+        return $this->assertEntityActioned('delete', 'organization', $organization);
     }
 
     /**
@@ -352,8 +306,49 @@ class FakeProvider extends AbstractProvider
      */
     public function assertNoOrganizationsDeleted(): self
     {
-        PHPUnit::assertEmpty($this->deletedOrganizations, 'Expected to delete 0 organization records, actually updated ' . count($this->deletedOrganizations));
+        return $this->assertNoEntitiesActioned('delete', 'organization');
+    }
+
+    private function assertEntityActioned($action, $entity, $model = null): self
+    {
+        $actionPast = $this->pastTense($action);
+
+        /** @var array $bucket */
+        $bucket = $this->{$actionPast.ucfirst($entity)."s"};
+
+        PHPUnit::assertNotEmpty(
+            $bucket,
+            "Expected to $action at least 1 $entity record, actually $actionPast none"
+        );
+
+        if ($model) {
+            PHPUnit::assertContains(
+                $model,
+                $bucket,
+                "The expected $entity was not $actionPast"
+            );
+        }
+        
+        return $this;
+    }
+
+    private function assertNoEntitiesActioned($action, $entity): self
+    {
+        $actionPast = $this->pastTense($action);
+
+        /** @var array $bucket */
+        $bucket = $this->{$actionPast.ucfirst($entity)."s"};
+
+        PHPUnit::assertEmpty(
+            $bucket,
+            "Expected to $actionPast 0 $entity records, actually $actionPast " . count($bucket)
+        );
 
         return $this;
+    }
+
+    private function pastTense(string $action): string
+    {
+        return $action.'d';
     }
 }
