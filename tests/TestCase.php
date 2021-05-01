@@ -59,9 +59,23 @@ class TestCase extends Orchestra
 
         $this->registerFakeProvider($app);
 
+        $this->runFixtureMigrations();
+
         /*
         include_once __DIR__.'/../database/migrations/create_relay_table.php.stub';
         (new \CreatePackageTable())->up();
         */
+    }
+
+    protected function runFixtureMigrations()
+    {
+        $migrations = [
+            'CreateContactsTable' => '/Fixtures/Migrations/create_contacts_table.php'
+        ];
+
+        foreach ($migrations as $class => $file) {
+            include_once __DIR__.$file;
+            (new $class)->up();
+        }
     }
 }

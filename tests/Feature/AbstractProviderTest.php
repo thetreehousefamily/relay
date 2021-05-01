@@ -30,7 +30,7 @@ class AbstractProviderTest extends TestCase
     {
         $provider = $this->newAbstractProviderImplementation();
 
-        $this->assertEquals('Abstract Provider Implementation', $provider->name());
+        $this->assertEquals('Hub Fake', $provider->name());
     }
 
     public function test_it_returns_predefined_contact_model_column()
@@ -46,7 +46,7 @@ class AbstractProviderTest extends TestCase
     {
         $provider = $this->newAbstractProviderImplementation();
 
-        $this->assertEquals('abstract_provider_implementation_id', $provider->contactModelColumn());
+        $this->assertEquals('hub_fake_id', $provider->contactModelColumn());
     }
 
     public function test_it_returns_predefined_organization_model_column()
@@ -62,7 +62,7 @@ class AbstractProviderTest extends TestCase
     {
         $provider = $this->newAbstractProviderImplementation();
 
-        $this->assertEquals('abstract_provider_implementation_id', $provider->organizationModelColumn());
+        $this->assertEquals('hub_fake_id', $provider->organizationModelColumn());
     }
 
     public function test_it_throws_exception_when_checking_contact_exists_and_contacts_are_not_supported()
@@ -155,7 +155,7 @@ class AbstractProviderTest extends TestCase
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\CreateAbstractProviderImplementationContact',
+            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\CreateHubFakeContact',
             $message
         );
     }
@@ -184,7 +184,7 @@ class AbstractProviderTest extends TestCase
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\CreateAbstractProviderImplementationOrganization',
+            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\CreateHubFakeOrganization',
             $message
         );
     }
@@ -213,7 +213,7 @@ class AbstractProviderTest extends TestCase
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\UpdateAbstractProviderImplementationContact',
+            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\UpdateHubFakeContact',
             $message
         );
     }
@@ -242,7 +242,7 @@ class AbstractProviderTest extends TestCase
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\UpdateAbstractProviderImplementationOrganization',
+            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\UpdateHubFakeOrganization',
             $message
         );
     }
@@ -271,7 +271,7 @@ class AbstractProviderTest extends TestCase
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\DeleteAbstractProviderImplementationContact',
+            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\DeleteHubFakeContact',
             $message
         );
     }
@@ -300,18 +300,18 @@ class AbstractProviderTest extends TestCase
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\DeleteAbstractProviderImplementationOrganization',
+            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\DeleteHubFakeOrganization',
             $message
         );
     }
 
     private function newAbstractProviderImplementation(): AbstractProvider
     {
-        return new AbstractProviderImplementationRelay;
+        return new HubFakeRelay;
     }
 }
 
-class AbstractProviderImplementationRelay extends AbstractProvider
+class HubFakeRelay extends AbstractProvider
 {
     // Increase the visibility of the properties for testing
     public $name;
