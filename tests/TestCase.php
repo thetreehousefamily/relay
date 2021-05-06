@@ -8,6 +8,7 @@ use Orchestra\Testbench\TestCase as Orchestra;
 use TheTreehouse\Relay\Facades\Relay;
 use TheTreehouse\Relay\RelayServiceProvider;
 use TheTreehouse\Relay\Tests\Concerns\ProvidesFakeProvider;
+use TheTreehouse\Relay\Tests\Contracts\UsingFakeRelay;
 use TheTreehouse\Relay\Tests\Fixtures\Models\Contact;
 use TheTreehouse\Relay\Tests\Fixtures\Models\Organization;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\FakeProvider;
@@ -29,6 +30,10 @@ class TestCase extends Orchestra
         }
 
         Bus::fake();
+
+        if ($this instanceof UsingFakeRelay) {
+            Relay::fake();
+        }
     }
 
     protected function getPackageProviders($app)

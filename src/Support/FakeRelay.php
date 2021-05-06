@@ -19,14 +19,14 @@ class FakeRelay implements RelayContract
      *
      * @var bool|null
      */
-    protected bool $supportsContacts;
+    protected ?bool $supportsContacts = null;
 
     /**
      * Override fake value for supports organizations
      *
      * @var bool|null
      */
-    protected bool $supportsOrganizations;
+    protected ?bool $supportsOrganizations = null;
 
     /**
      * Instantiate the Fake Relay with the original instance, so that calls can be
