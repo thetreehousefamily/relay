@@ -20,6 +20,18 @@ trait ProcessesIncomingOperations
     }
 
     /**
+     * Relay an organization that was created on this provider to the rest of the application
+     * 
+     * @param string $id 
+     * @param array $properties 
+     * @return \Illuminate\Database\Eloquent\Model|bool The created model, or false if the organization was not otherwise processed
+     */
+    public function createdOrganization(string $id, array $properties)
+    {
+        return $this->processIncomingOperation('organization', 'created', $id, $properties);
+    }
+
+    /**
      * Process an incoming operation
      * 
      * @param string $entity

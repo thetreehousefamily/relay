@@ -75,7 +75,8 @@ class TestCase extends Orchestra
     protected function runFixtureMigrations()
     {
         $migrations = [
-            'CreateContactsTable' => '/Fixtures/Migrations/create_contacts_table.php'
+            'CreateContactsTable' => '/Fixtures/Migrations/create_contacts_table.php',
+            'CreateOrganizationsTable' => '/Fixtures/Migrations/create_organizations_table.php'
         ];
 
         foreach ($migrations as $class => $file) {
