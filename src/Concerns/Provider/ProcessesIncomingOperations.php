@@ -16,15 +16,40 @@ trait ProcessesIncomingOperations
      */
     public function createdContact(string $id, array $properties)
     {
-        if (!Relay::supportsContacts() || !$this->supportsContacts()) {
+        return $this->processIncomingOperation('contact', 'created', $id, $properties);
+    }
+
+    /**
+     * Process an incoming operation
+     * 
+     * @param string $entity
+     * @param string $action
+     * @param string $id
+     * @param array $properties
+     * @return mixed
+     */
+    protected function processIncomingOperation(string $entity, string $action, string $id, array $properties = [])
+    {
+        $supportMethod = "supports".ucfirst($entity)."s";
+
+        if (!Relay::$supportMethod() || !$this->$supportMethod()) {
             return false;
         }
 
-        $model = $this->firstOrNewEntity('contact', $id);
+        $model;
 
-        $model->fill(array_merge([$this->contactModelColumn() => $id], $properties));
+        switch ($action) {
+            case 'created':
+                $model = $this->firstOrNewEntity($entity, $id)
+                    ->fill(array_merge(
+                        [$this->{$entity."ModelColumn"}() => $id],
+                        $properties
+                    ));
 
-        $model->save();
+                $model->save();
+
+                break;
+        }
 
         return $model;
     }
