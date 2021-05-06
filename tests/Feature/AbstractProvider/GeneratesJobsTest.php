@@ -1,13 +1,9 @@
 <?php
 
-namespace TheTreehouse\Relay\Tests\Feature;
+namespace TheTreehouse\Relay\Tests\Feature\AbstractProvider;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Support\Str;
-use TheTreehouse\Relay\AbstractProvider;
 use TheTreehouse\Relay\Exceptions\ProviderSupportException;
-use TheTreehouse\Relay\Facades\Relay;
-use TheTreehouse\Relay\Tests\Contracts\UsingFakeRelay;
 use TheTreehouse\Relay\Tests\Fixtures\Models\Contact;
 use TheTreehouse\Relay\Tests\Fixtures\Models\Organization;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\CreateFakeContact;
@@ -16,102 +12,9 @@ use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\DeleteFakeCont
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\DeleteFakeOrganization;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\UpdateFakeContact;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\UpdateFakeOrganization;
-use TheTreehouse\Relay\Tests\TestCase;
 
-class AbstractProviderTest extends TestCase implements UsingFakeRelay
+class GeneratesJobsTest extends BaseAbstractProviderTest
 {
-    public function test_it_returns_predefined_name()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $provider->name = 'Predefined Name';
-
-        $this->assertEquals('Predefined Name', $provider->name());
-    }
-
-    public function test_it_correctly_guesses_name()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $this->assertEquals('Hub Fake', $provider->name());
-    }
-
-    public function test_it_returns_predefined_contact_model_column()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $provider->contactModelColumn = 'predefined_contact_model_column';
-
-        $this->assertEquals('predefined_contact_model_column', $provider->contactModelColumn());
-    }
-
-    public function test_it_correctly_guesses_contact_model_column()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $this->assertEquals('hub_fake_id', $provider->contactModelColumn());
-    }
-
-    public function test_it_returns_predefined_organization_model_column()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $provider->organizationModelColumn = 'predefined_organization_model_column';
-
-        $this->assertEquals('predefined_organization_model_column', $provider->organizationModelColumn());
-    }
-
-    public function test_it_correctly_guesses_organization_model_column()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $this->assertEquals('hub_fake_id', $provider->organizationModelColumn());
-    }
-
-    public function test_it_throws_exception_when_checking_contact_exists_and_contacts_are_not_supported()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $provider->supportsContacts = false;
-
-        $this->expectException(ProviderSupportException::class);
-
-        $provider->contactExists(new Contact);
-    }
-
-    public function test_it_throws_exception_when_checking_organization_exists_and_organizations_are_not_supported()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $provider->supportsOrganizations = false;
-
-        $this->expectException(ProviderSupportException::class);
-
-        $provider->organizationExists(new Organization);
-    }
-
-    public function test_it_throws_exception_when_getting_contact_model_column_and_contacts_are_not_supported()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $provider->supportsContacts = false;
-
-        $this->expectException(ProviderSupportException::class);
-
-        $provider->contactModelColumn();
-    }
-
-    public function test_it_throws_exception_when_getting_organization_model_column_and_organizations_are_not_supported()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $provider->supportsOrganizations = false;
-
-        $this->expectException(ProviderSupportException::class);
-
-        $provider->organizationModelColumn();
-    }
-
     public function test_it_throws_exception_when_generating_create_contact_job_and_contacts_are_not_supported()
     {
         $provider = $this->newAbstractProviderImplementation();
@@ -158,7 +61,7 @@ class AbstractProviderTest extends TestCase implements UsingFakeRelay
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\CreateHubFakeContact',
+            'TheTreehouse\\Relay\\Tests\\Feature\\AbstractProvider\\Jobs\\CreateHubFakeContact',
             $message
         );
     }
@@ -187,7 +90,7 @@ class AbstractProviderTest extends TestCase implements UsingFakeRelay
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\CreateHubFakeOrganization',
+            'TheTreehouse\\Relay\\Tests\\Feature\\AbstractProvider\\Jobs\\CreateHubFakeOrganization',
             $message
         );
     }
@@ -216,7 +119,7 @@ class AbstractProviderTest extends TestCase implements UsingFakeRelay
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\UpdateHubFakeContact',
+            'TheTreehouse\\Relay\\Tests\\Feature\\AbstractProvider\\Jobs\\UpdateHubFakeContact',
             $message
         );
     }
@@ -245,7 +148,7 @@ class AbstractProviderTest extends TestCase implements UsingFakeRelay
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\UpdateHubFakeOrganization',
+            'TheTreehouse\\Relay\\Tests\\Feature\\AbstractProvider\\Jobs\\UpdateHubFakeOrganization',
             $message
         );
     }
@@ -274,7 +177,7 @@ class AbstractProviderTest extends TestCase implements UsingFakeRelay
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\DeleteHubFakeContact',
+            'TheTreehouse\\Relay\\Tests\\Feature\\AbstractProvider\\Jobs\\DeleteHubFakeContact',
             $message
         );
     }
@@ -303,75 +206,8 @@ class AbstractProviderTest extends TestCase implements UsingFakeRelay
         }
 
         $this->assertStringContainsString(
-            'TheTreehouse\\Relay\\Tests\\Feature\\Jobs\\DeleteHubFakeOrganization',
+            'TheTreehouse\\Relay\\Tests\\Feature\\AbstractProvider\\Jobs\\DeleteHubFakeOrganization',
             $message
         );
     }
-
-    public function test_it_does_not_process_created_contact_if_not_supported_by_application()
-    {
-        Relay::setSupportsContacts(false);
-        
-        $provider = $this->newAbstractProviderImplementation();
-
-        $this->assertFalse($provider->createdContact('foo', ['foo' => 'bar']));
-    }
-
-    public function test_it_does_not_process_created_contact_if_not_supported_by_provider()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $provider->supportsContacts = false;
-
-        $this->assertFalse($provider->createdContact('foo', ['foo' => 'bar']));
-    }
-
-    public function test_it_creates_contact_from_provider()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $model = $provider->createdContact($id = 'hub_fake_id_'.Str::random(), ['name' => 'Josephine']);
-
-        $this->assertInstanceOf(Contact::class, $model);
-
-        $this->assertEquals($id, $model->hub_fake_id);
-        $this->assertEquals('Josephine', $model->name);
-    }
-
-    public function test_it_creates_existing_contact_from_provider()
-    {
-        Contact::create([
-            'hub_fake_id' => $id = 'hub_fake_id'.Str::random(),
-            'name' => 'Josie'
-        ]);
-
-        $provider = $this->newAbstractProviderImplementation();
-
-        $model = $provider->createdContact($id, ['name' => 'Josephine']);
-
-        $this->assertInstanceOf(Contact::class, $model);
-        $this->assertEquals($id, $model->hub_fake_id);
-        $this->assertEquals('Josephine', $model->name);
-    }
-
-    private function newAbstractProviderImplementation(): AbstractProvider
-    {
-        return new HubFakeRelay;
-    }
-}
-
-class HubFakeRelay extends AbstractProvider
-{
-    // Increase the visibility of the properties for testing
-    public $name;
-    public $supportsContacts = true;
-    public $supportsOrganizations = true;
-    public $contactModelColumn;
-    public $organizationModelColumn;
-    public $createContactJob;
-    public $createOrganizationJob;
-    public $updateContactJob;
-    public $updateOrganizationJob;
-    public $deleteContactJob;
-    public $deleteOrganizationJob;
 }
