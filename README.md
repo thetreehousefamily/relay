@@ -1,11 +1,44 @@
-# Synchronise your Laravel contacts and companies across your operational suite
+<h1 align="center">
+<img src="https://storage.googleapis.com/thetreehouse-family.appspot.com/relay/assets/relay-on-white.png" width="450">
+</h1>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/the-treehouse/relay.svg?style=flat-square)](https://packagist.org/packages/the-treehouse/relay)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/the-treehouse/relay/run-tests?label=tests)](https://github.com/the-treehouse/relay/actions?query=workflow%3Arun-tests+branch%3Amaster)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/the-treehouse/relay/Check%20&%20fix%20styling?label=code%20style)](https://github.com/the-treehouse/relay/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
-[![Total Downloads](https://img.shields.io/packagist/dt/the-treehouse/relay.svg?style=flat-square)](https://packagist.org/packages/the-treehouse/relay)
+<p align="center">
+<a href="https://packagist.org/packages/thetreehouse/relay"><img src="https://img.shields.io/packagist/v/thetreehouse/relay.svg?style=flat-square" alt="Latest Version on Packagist"></a>
+<a href="https://github.com/thetreehousefamily/relay/actions?query=workflow%3Arun-tests+branch%3Amaster"><img src="https://img.shields.io/github/workflow/status/thetreehousefamily/relay/run-tests?label=tests" alt="GitHub Tests Action Status"></a>
+<a href='https://github.com/thetreehousefamily/relay/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster'><img src="https://img.shields.io/github/workflow/status/thetreehousefamily/relay/Check%20&%20fix%20styling?label=code%20style" alt="GitHub Code Style Action Status"></a>
+<a href="https://packagist.org/packages/thetreehouse/relay"><img src="https://img.shields.io/packagist/dt/thetreehouse/relay.svg?style=flat-square" alt="Total Downloads"></a>
+</p>
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+<p align="center">
+Painlessly sync your contacts and organizations between your Laravel application and the rest of your operational suite.
+</p>
+
+<hr>
+
+Relay helps you to bootstrap your internal integrations by painlessly, **bidirectionally**, syncing the contacts and organizational accounts between your Laravel application and the rest of your operational suite.
+
+> Note: This is the core Relay repository. If you're looking to install a particular driver, checkout the [Drivers](#) section.
+
+## Contents
+- [What Problem does Relay Solve?](#what-problem-does-relay-solve?)
+- [Requirements](#requirements)
+- [Installation](#installation)
+    - [Driver Installation](#driver-installation)
+- [General Usage](#general-usage)
+- [Testing](#testing)
+- [Changelog](#changelog)
+- [Contributing](#contributing)
+- [Security Vulnerabilities](#security-vulnerabilities)
+- [Credits](#credits)
+- [License](#License)
+
+
+
+## What Problem does Relay Solve?
+
+In the early stages (or frankly any stage) of a startup, the development team is often tasked with integrating the platform or application with different operational tools. Think CRMs, marketing automation suites, payment gateways etc.
+
+Relay lets you, as a developer, focus on building the actual product instead of integrating time consuming, (and often poorly documented) third party APIs. By abstracting these service's APIs into plug-and-play driver packages, Relay simply observes the relevant Eloquent models of your application and tasks these drivers with updating the relevant service.
 
 ## Requirements
 
@@ -13,37 +46,15 @@ Relay requires PHP `^8.0` or `^7.4`, and Laravel `^8.0`.
 
 ## Installation
 
-You can install the package via composer:
+// TODO: Installation instructions, including locking the core Relay package
 
-```bash
-composer require the-treehouse/relay
-```
+### Driver Installation
 
-You can publish and run the migrations with:
+// TODO: Driver Installation
 
-```bash
-php artisan vendor:publish --provider="TheTreehouse\Relay\RelayServiceProvider" --tag="relay-migrations"
-php artisan migrate
-```
+## General Usage
 
-You can publish the config file with:
-```bash
-php artisan vendor:publish --provider="TheTreehouse\Relay\RelayServiceProvider" --tag="relay-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-## Usage
-
-```php
-$relay = new TheTreehouse\Relay();
-echo $relay->echoPhrase('Hello, Spatie!');
-```
+// TODO: General Usage, including reference to see each package's specific usage instructions
 
 ## Testing
 
