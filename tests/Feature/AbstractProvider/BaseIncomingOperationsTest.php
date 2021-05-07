@@ -46,7 +46,7 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
 
     public function test_it_creates_existing_entity_from_provider()
     {
-        $this->modelClass::create([
+        $existing = $this->modelClass::create([
             'hub_fake_id' => $id = 'hub_fake_id'.Str::random(),
             'name' => 'Josie'
         ]);
@@ -56,6 +56,54 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
         $model = $provider->{"created{$this->ucEntity()}"}($id, ['name' => 'Josephine']);
 
         $this->assertInstanceOf($this->modelClass, $model);
+        $this->assertEquals($existing->id, $model->id);
+        $this->assertEquals($id, $model->hub_fake_id);
+        $this->assertEquals('Josephine', $model->name);
+    }
+
+    public function test_it_does_not_process_updated_entity_if_not_supported_by_application()
+    {
+        Relay::{"setSupports{$this->ucEntityPlural()}"}(false);
+        
+        $provider = $this->newAbstractProviderImplementation();
+
+        $this->assertFalse($provider->{"updated{$this->ucEntity()}"}('foo', ['foo' => 'bar']));
+    }
+
+    public function test_it_does_not_process_updated_entity_if_not_supported_by_provider()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        $provider->{"supports{$this->ucEntityPlural()}"} = false;
+
+        $this->assertFalse($provider->{"updated{$this->ucEntity()}"}('foo', ['foo' => 'bar']));
+    }
+
+    public function test_it_updates_entity_from_provider()
+    {
+        $existing = $this->modelClass::create([
+            'hub_fake_id' => $id = 'hub_fake_id'.Str::random(),
+            'name' => 'Josie'
+        ]);
+
+        $provider = $this->newAbstractProviderImplementation();
+
+        $model = $provider->{"updated{$this->ucEntity()}"}($id, ['name' => 'Josephine']);
+
+        $this->assertInstanceOf($this->modelClass, $model);
+        $this->assertEquals($existing->id, $model->id);
+        $this->assertEquals($id, $model->hub_fake_id);
+        $this->assertEquals('Josephine', $model->name);
+    }
+
+    public function test_it_upserts_entity_from_provider()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        $model = $provider->{"created{$this->ucEntity()}"}($id = 'hub_fake_id_'.Str::random(), ['name' => 'Josephine']);
+
+        $this->assertInstanceOf($this->modelClass, $model);
+
         $this->assertEquals($id, $model->hub_fake_id);
         $this->assertEquals('Josephine', $model->name);
     }

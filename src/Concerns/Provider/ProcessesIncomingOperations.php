@@ -30,6 +30,30 @@ trait ProcessesIncomingOperations
     {
         return $this->processIncomingOperation('organization', 'created', $id, $properties);
     }
+    
+    /**
+     * Relay a contact that was updated on this provider to the rest of the application
+     * 
+     * @param string $id 
+     * @param array $properties 
+     * @return \Illuminate\Database\Eloquent\Model|bool The updated model, or false if the contact was not otherwise processed
+     */
+    public function updatedContact(string $id, array $properties)
+    {
+        return $this->processIncomingOperation('contact', 'updated', $id, $properties);
+    }
+
+    /**
+     * Relay an organization that was updated on this provider to the rest of the application
+     * 
+     * @param string $id 
+     * @param array $properties 
+     * @return \Illuminate\Database\Eloquent\Model|bool The updated model, or false if the organization was not otherwise processed
+     */
+    public function updatedOrganization(string $id, array $properties)
+    {
+        return $this->processIncomingOperation('organization', 'updated', $id, $properties);
+    }
 
     /**
      * Process an incoming operation
@@ -48,22 +72,17 @@ trait ProcessesIncomingOperations
             return false;
         }
 
-        $model;
+        if ($action === 'created' || $action === 'updated') {
+            $model = $this->firstOrNewEntity($entity, $id)
+                ->fill(array_merge(
+                    [$this->{$entity."ModelColumn"}() => $id],
+                    $properties
+                ));
+    
+            $model->save();
 
-        switch ($action) {
-            case 'created':
-                $model = $this->firstOrNewEntity($entity, $id)
-                    ->fill(array_merge(
-                        [$this->{$entity."ModelColumn"}() => $id],
-                        $properties
-                    ));
-
-                $model->save();
-
-                break;
+            return $model;
         }
-
-        return $model;
     }
 
     /**
