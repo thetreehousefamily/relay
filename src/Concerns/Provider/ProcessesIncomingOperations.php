@@ -56,6 +56,28 @@ trait ProcessesIncomingOperations
     }
 
     /**
+     * Relay a contact that was deleted on this provider to the rest of the application
+     * 
+     * @param string $id 
+     * @return \Illuminate\Database\Eloquent\Model|bool The deleted model, or false if the contact was not otherwise processed
+     */
+    public function deletedContact(string $id)
+    {
+        return $this->processIncomingOperation('contact', 'deleted', $id);
+    }
+
+    /**
+     * Relay an organization that was deleted on this provider to the rest of the application
+     * 
+     * @param string $id 
+     * @return \Illuminate\Database\Eloquent\Model|bool The deleted model, or false if the organization was not otherwise processed
+     */
+    public function deletedOrganization(string $id)
+    {
+        return $this->processIncomingOperation('organization', 'deleted', $id);
+    }
+
+    /**
      * Process an incoming operation
      * 
      * @param string $entity
@@ -72,6 +94,7 @@ trait ProcessesIncomingOperations
             return false;
         }
 
+        // Process upsert operations
         if ($action === 'created' || $action === 'updated') {
             $model = $this->firstOrNewEntity($entity, $id)
                 ->fill(array_merge(
@@ -83,6 +106,13 @@ trait ProcessesIncomingOperations
 
             return $model;
         }
+
+        // Otherwise, process a deleted operation
+        if (($model = $this->firstOrNewEntity($entity, $id))->exists) {
+            $model->delete();
+        }
+
+        return true;
     }
 
     /**

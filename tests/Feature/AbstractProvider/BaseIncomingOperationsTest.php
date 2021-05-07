@@ -108,6 +108,39 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
         $this->assertEquals('Josephine', $model->name);
     }
 
+    public function test_it_does_not_process_deleted_entity_if_not_supported_by_application()
+    {
+        Relay::{"setSupports{$this->ucEntityPlural()}"}(false);
+        
+        $provider = $this->newAbstractProviderImplementation();
+
+        $this->assertFalse($provider->{"deleted{$this->ucEntity()}"}('foo', ['foo' => 'bar']));
+    }
+
+    public function test_it_does_not_process_deleted_entity_if_not_supported_by_provider()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        $provider->{"supports{$this->ucEntityPlural()}"} = false;
+
+        $this->assertFalse($provider->{"deleted{$this->ucEntity()}"}('foo', ['foo' => 'bar']));
+    }
+
+    public function test_it_deletes_entity_from_provider()
+    {
+        $this->modelClass::create([
+            'hub_fake_id' => $id = 'hub_fake_id'.Str::random(),
+            'name' => 'Josie'
+        ]);
+
+        $provider = $this->newAbstractProviderImplementation();
+
+        $result = $provider->{"deleted{$this->ucEntity()}"}($id);
+
+        $this->assertTrue($result);
+        $this->assertFalse($this->modelClass::where('hub_fake_id', $id)->exists());
+    }
+
     private function ucEntity(): string
     {
         return ucfirst($this->entity);
