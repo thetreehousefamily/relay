@@ -9,9 +9,9 @@ trait ProcessesIncomingOperations
 {
     /**
      * Relay a contact that was created on this provider to the rest of the application
-     * 
-     * @param string $id 
-     * @param array $properties 
+     *
+     * @param string $id
+     * @param array $properties
      * @return \Illuminate\Database\Eloquent\Model|bool The created model, or false if the contact was not otherwise processed
      */
     public function createdContact(string $id, array $properties)
@@ -21,9 +21,9 @@ trait ProcessesIncomingOperations
 
     /**
      * Relay an organization that was created on this provider to the rest of the application
-     * 
-     * @param string $id 
-     * @param array $properties 
+     *
+     * @param string $id
+     * @param array $properties
      * @return \Illuminate\Database\Eloquent\Model|bool The created model, or false if the organization was not otherwise processed
      */
     public function createdOrganization(string $id, array $properties)
@@ -33,9 +33,9 @@ trait ProcessesIncomingOperations
     
     /**
      * Relay a contact that was updated on this provider to the rest of the application
-     * 
-     * @param string $id 
-     * @param array $properties 
+     *
+     * @param string $id
+     * @param array $properties
      * @return \Illuminate\Database\Eloquent\Model|bool The updated model, or false if the contact was not otherwise processed
      */
     public function updatedContact(string $id, array $properties)
@@ -45,9 +45,9 @@ trait ProcessesIncomingOperations
 
     /**
      * Relay an organization that was updated on this provider to the rest of the application
-     * 
-     * @param string $id 
-     * @param array $properties 
+     *
+     * @param string $id
+     * @param array $properties
      * @return \Illuminate\Database\Eloquent\Model|bool The updated model, or false if the organization was not otherwise processed
      */
     public function updatedOrganization(string $id, array $properties)
@@ -57,8 +57,8 @@ trait ProcessesIncomingOperations
 
     /**
      * Relay a contact that was deleted on this provider to the rest of the application
-     * 
-     * @param string $id 
+     *
+     * @param string $id
      * @return \Illuminate\Database\Eloquent\Model|bool The deleted model, or false if the contact was not otherwise processed
      */
     public function deletedContact(string $id)
@@ -68,8 +68,8 @@ trait ProcessesIncomingOperations
 
     /**
      * Relay an organization that was deleted on this provider to the rest of the application
-     * 
-     * @param string $id 
+     *
+     * @param string $id
      * @return \Illuminate\Database\Eloquent\Model|bool The deleted model, or false if the organization was not otherwise processed
      */
     public function deletedOrganization(string $id)
@@ -79,7 +79,7 @@ trait ProcessesIncomingOperations
 
     /**
      * Process an incoming operation
-     * 
+     *
      * @param string $entity
      * @param string $action
      * @param string $id
@@ -90,7 +90,7 @@ trait ProcessesIncomingOperations
     {
         $supportMethod = "supports".ucfirst($entity)."s";
 
-        if (!Relay::$supportMethod() || !$this->$supportMethod()) {
+        if (! Relay::$supportMethod() || ! $this->$supportMethod()) {
             return false;
         }
 
@@ -118,7 +118,7 @@ trait ProcessesIncomingOperations
     /**
      * Retrieve an existing model instance by the provided entity type and id, or a new
      * model if one does not yet exist
-     * 
+     *
      * @param string $entity
      * @param string $id
      * @return \Illuminate\Database\Eloquent\Model

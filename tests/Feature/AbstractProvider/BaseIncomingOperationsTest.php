@@ -17,14 +17,14 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
     private $supportOperations = [
         'created',
         'updated',
-        'deleted'
+        'deleted',
     ];
 
     public function test_it_does_not_process_operation_if_not_supported_by_application()
     {
         Relay::{"setSupports{$this->ucEntityPlural()}"}(false);
 
-        foreach($this->supportOperations as $operation) {
+        foreach ($this->supportOperations as $operation) {
             $provider = $this->newAbstractProviderImplementation();
     
             $this->assertFalse($provider->{$operation.$this->ucEntity()}('foo', ['foo' => 'bar']));
@@ -33,7 +33,7 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
 
     public function test_it_does_not_process_operation_if_not_supported_by_provider()
     {
-        foreach($this->supportOperations as $operation) {
+        foreach ($this->supportOperations as $operation) {
             $provider = $this->newAbstractProviderImplementation();
 
             $provider->{"supports{$this->ucEntityPlural()}"} = false;
@@ -58,7 +58,7 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
     {
         $existing = $this->modelClass::create([
             'hub_fake_id' => $id = 'hub_fake_id'.Str::random(),
-            'name' => 'Josie'
+            'name' => 'Josie',
         ]);
 
         $provider = $this->newAbstractProviderImplementation();
@@ -75,7 +75,7 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
     {
         $existing = $this->modelClass::create([
             'hub_fake_id' => $id = 'hub_fake_id'.Str::random(),
-            'name' => 'Josie'
+            'name' => 'Josie',
         ]);
 
         $provider = $this->newAbstractProviderImplementation();
@@ -104,7 +104,7 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
     {
         $this->modelClass::create([
             'hub_fake_id' => $id = 'hub_fake_id'.Str::random(),
-            'name' => 'Josie'
+            'name' => 'Josie',
         ]);
 
         $provider = $this->newAbstractProviderImplementation();

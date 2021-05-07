@@ -76,7 +76,7 @@ class TestCase extends Orchestra
     {
         $migrations = [
             'CreateContactsTable' => '/Fixtures/Migrations/create_contacts_table.php',
-            'CreateOrganizationsTable' => '/Fixtures/Migrations/create_organizations_table.php'
+            'CreateOrganizationsTable' => '/Fixtures/Migrations/create_organizations_table.php',
         ];
 
         foreach ($migrations as $class => $file) {
