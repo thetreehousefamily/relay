@@ -14,22 +14,32 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
     /** @var string */
     protected $modelClass;
 
-    public function test_it_does_not_process_created_entity_if_not_supported_by_application()
+    private $supportOperations = [
+        'created',
+        'updated',
+        'deleted'
+    ];
+
+    public function test_it_does_not_process_operation_if_not_supported_by_application()
     {
         Relay::{"setSupports{$this->ucEntityPlural()}"}(false);
-        
-        $provider = $this->newAbstractProviderImplementation();
 
-        $this->assertFalse($provider->{"created{$this->ucEntity()}"}('foo', ['foo' => 'bar']));
+        foreach($this->supportOperations as $operation) {
+            $provider = $this->newAbstractProviderImplementation();
+    
+            $this->assertFalse($provider->{$operation.$this->ucEntity()}('foo', ['foo' => 'bar']));
+        }
     }
 
-    public function test_it_does_not_process_created_entity_if_not_supported_by_provider()
+    public function test_it_does_not_process_operation_if_not_supported_by_provider()
     {
-        $provider = $this->newAbstractProviderImplementation();
+        foreach($this->supportOperations as $operation) {
+            $provider = $this->newAbstractProviderImplementation();
 
-        $provider->{"supports{$this->ucEntityPlural()}"} = false;
-
-        $this->assertFalse($provider->{"created{$this->ucEntity()}"}('foo', ['foo' => 'bar']));
+            $provider->{"supports{$this->ucEntityPlural()}"} = false;
+    
+            $this->assertFalse($provider->{$operation.$this->ucEntity()}('foo', ['foo' => 'bar']));
+        }
     }
 
     public function test_it_creates_entity_from_provider()
@@ -61,24 +71,6 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
         $this->assertEquals('Josephine', $model->name);
     }
 
-    public function test_it_does_not_process_updated_entity_if_not_supported_by_application()
-    {
-        Relay::{"setSupports{$this->ucEntityPlural()}"}(false);
-        
-        $provider = $this->newAbstractProviderImplementation();
-
-        $this->assertFalse($provider->{"updated{$this->ucEntity()}"}('foo', ['foo' => 'bar']));
-    }
-
-    public function test_it_does_not_process_updated_entity_if_not_supported_by_provider()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $provider->{"supports{$this->ucEntityPlural()}"} = false;
-
-        $this->assertFalse($provider->{"updated{$this->ucEntity()}"}('foo', ['foo' => 'bar']));
-    }
-
     public function test_it_updates_entity_from_provider()
     {
         $existing = $this->modelClass::create([
@@ -100,30 +92,12 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
     {
         $provider = $this->newAbstractProviderImplementation();
 
-        $model = $provider->{"created{$this->ucEntity()}"}($id = 'hub_fake_id_'.Str::random(), ['name' => 'Josephine']);
+        $model = $provider->{"updated{$this->ucEntity()}"}($id = 'hub_fake_id_'.Str::random(), ['name' => 'Josephine']);
 
         $this->assertInstanceOf($this->modelClass, $model);
 
         $this->assertEquals($id, $model->hub_fake_id);
         $this->assertEquals('Josephine', $model->name);
-    }
-
-    public function test_it_does_not_process_deleted_entity_if_not_supported_by_application()
-    {
-        Relay::{"setSupports{$this->ucEntityPlural()}"}(false);
-        
-        $provider = $this->newAbstractProviderImplementation();
-
-        $this->assertFalse($provider->{"deleted{$this->ucEntity()}"}('foo', ['foo' => 'bar']));
-    }
-
-    public function test_it_does_not_process_deleted_entity_if_not_supported_by_provider()
-    {
-        $provider = $this->newAbstractProviderImplementation();
-
-        $provider->{"supports{$this->ucEntityPlural()}"} = false;
-
-        $this->assertFalse($provider->{"deleted{$this->ucEntity()}"}('foo', ['foo' => 'bar']));
     }
 
     public function test_it_deletes_entity_from_provider()
