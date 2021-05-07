@@ -15,9 +15,9 @@ Painlessly sync your contacts and organizations between your Laravel application
 
 <hr>
 
-> Note: This is the core Relay repository. If you're looking to install a particular driver, checkout the [Drivers](#) section.
-
 Relay helps you to bootstrap your internal integrations by painlessly, **bidirectionally**, syncing the contacts and organizational accounts between your Laravel application and the rest of your operational suite.
+
+> Note: This is the core Relay repository. If you're looking to install a particular driver, checkout the [Drivers](#) section.
 
 ## Contents
 - [What Problem does Relay Solve?](#what-problem-does-relay-solve?)
@@ -25,6 +25,12 @@ Relay helps you to bootstrap your internal integrations by painlessly, **bidirec
 - [Installation](#installation)
     - [Driver Installation](#driver-installation)
 - [General Usage](#general-usage)
+- [Testing](#testing)
+- [Changelog](#changelog)
+- [Contributing](#contributing)
+- [Security Vulnerabilities](#security-vulnerabilities)
+- [Credits](#credits)
+- [License](#License)
 
 
 
