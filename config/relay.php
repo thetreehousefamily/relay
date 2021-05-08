@@ -19,4 +19,20 @@ return [
      * If your application does not support organizations, you should leave this null.
      */
     'organization' => null,
+
+
+    /**
+     * Each provider will usually have it's own configuration, such as access tokens,
+     * credentials and whether the provider should supports contacts / organizations.
+     * 
+     * Refer to the provider's README to see what configuration options are available.
+     */
+    'providers' => [
+        /**
+         * For example, Provider XYZ would expect to find the API key here:
+         */
+        // 'provider_xyz' => [
+        //     'api_key' => 'abc-123'
+        // ],
+    ],
 ];
