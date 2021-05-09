@@ -2,10 +2,13 @@
 
 namespace TheTreehouse\Relay\Tests\Feature\Dispatcher;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Str;
 use TheTreehouse\Relay\Dispatcher;
 use TheTreehouse\Relay\Facades\Relay;
+use TheTreehouse\Relay\Jobs\RelayEntityAction;
+use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\FakeProvider;
 use TheTreehouse\Relay\Tests\TestCase;
 
 abstract class BaseDispatcherTest extends TestCase
@@ -53,7 +56,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayCreated{$this->entityName}"}(new $this->entityModelClass);
 
-        $this->assertNoEntitiesCreated();
+        $this->assertRelayEntityActionNotDispatched();
     }
 
     public function test_it_does_not_relay_created_if_entity_not_supported_by_provider()
@@ -64,7 +67,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayCreated{$this->entityName}"}(new $this->entityModelClass);
 
-        $this->assertNoEntitiesCreated();
+        $this->assertRelayEntityActionNotDispatched();
     }
 
     public function test_it_does_not_relay_created_if_entity_already_exists()
@@ -77,7 +80,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayCreated{$this->entityName}"}($model);
 
-        $this->assertNoEntitiesCreated();
+        $this->assertRelayEntityActionNotDispatched();
     }
 
     public function test_it_dispatches_create_job_from_provider()
@@ -88,7 +91,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayCreated{$this->entityName}"}($model);
 
-        $this->assertEntityCreated($model);
+        $this->assertRelayEntityActionDispatched($model, 'create');
     }
 
     public function test_it_does_not_relay_updated_if_entity_not_supported_by_application()
@@ -99,7 +102,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayUpdated{$this->entityName}"}(new $this->entityModelClass);
 
-        $this->assertNoEntitiesUpdated();
+        $this->assertRelayEntityActionNotDispatched();
     }
 
     public function test_it_does_not_relay_updated_if_entity_not_supported_by_provider()
@@ -110,7 +113,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayUpdated{$this->entityName}"}(new $this->entityModelClass);
 
-        $this->assertNoEntitiesUpdated();
+        $this->assertRelayEntityActionNotDispatched();
     }
 
     public function test_it_dispatches_create_job_on_relay_update_if_entity_does_not_yet_exist()
@@ -121,7 +124,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayUpdated{$this->entityName}"}($model);
 
-        $this->assertEntityCreated($model);
+        $this->assertRelayEntityActionDispatched($model, 'create');
     }
 
     public function test_it_dispatches_update_job_from_provider()
@@ -134,7 +137,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayUpdated{$this->entityName}"}($model);
 
-        $this->assertEntityUpdated($model);
+        $this->assertRelayEntityActionDispatched($model, 'update');
     }
 
     public function test_it_does_not_relay_deleted_if_entity_not_supported_by_application()
@@ -145,7 +148,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayDeleted{$this->entityName}"}(new $this->entityModelClass);
 
-        $this->assertNoEntitiesDeleted();
+        $this->assertRelayEntityActionNotDispatched();
     }
 
     public function test_it_does_not_relay_deleted_if_entity_not_supported_by_provider()
@@ -156,7 +159,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayDeleted{$this->entityName}"}(new $this->entityModelClass);
 
-        $this->assertNoEntitiesDeleted();
+        $this->assertRelayEntityActionNotDispatched();
     }
 
     public function test_it_does_not_relay_deleted_if_entity_does_not_exist()
@@ -167,7 +170,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayDeleted{$this->entityName}"}($model);
 
-        $this->assertNoEntitiesDeleted();
+        $this->assertRelayEntityActionNotDispatched();
     }
 
     public function test_it_dispatches_delete_job_from_provider()
@@ -180,7 +183,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayDeleted{$this->entityName}"}($model);
 
-        $this->assertEntityDeleted($model);
+        $this->assertRelayEntityActionDispatched($model, 'delete');
     }
 
     private function newDispatcher(): Dispatcher
@@ -188,57 +191,25 @@ abstract class BaseDispatcherTest extends TestCase
         return $this->app->make(Dispatcher::class);
     }
 
-    private function assertNoEntitiesCreated()
+    private function assertRelayEntityActionNotDispatched()
     {
-        $this->fakeProvider()->{"assertNo{$this->entityName}sCreated"}();
-
-        Bus::assertNotDispatched($this->createJob);
-
-        return $this;
+        Bus::assertNotDispatched(RelayEntityAction::class);
     }
 
-    private function assertEntityCreated($entity = null)
+    private function assertRelayEntityActionDispatched(Model $entity, string $action)
     {
-        $this->fakeProvider()->{"assert{$this->entityName}Created"}($entity);
+        Bus::assertDispatched(RelayEntityAction::class, function (RelayEntityAction $job) use ($entity, $action) {
+            if (
+                $job->entity !== $entity
+                || $job->entityType !== strtolower($this->entityName)
+                || $job->action !== $action
+                || $job->provider !== FakeProvider::class
+            ) {
+                $this->fail('Relay Entity Action job was misconfigured');
+                return false;
+            }
 
-        Bus::assertDispatched($this->createJob);
-
-        return $this;
-    }
-
-    private function assertNoEntitiesUpdated()
-    {
-        $this->fakeProvider()->{"assertNo{$this->entityName}sUpdated"}();
-
-        Bus::assertNotDispatched($this->updateJob);
-
-        return $this;
-    }
-
-    private function assertEntityUpdated($entity = null)
-    {
-        $this->fakeProvider()->{"assert{$this->entityName}Updated"}($entity);
-
-        Bus::assertDispatched($this->updateJob);
-
-        return $this;
-    }
-
-    private function assertNoEntitiesDeleted()
-    {
-        $this->fakeProvider()->{"assertNo{$this->entityName}sDeleted"}();
-
-        Bus::assertNotDispatched($this->deleteJob);
-
-        return $this;
-    }
-
-    private function assertEntityDeleted($entity = null)
-    {
-        $this->fakeProvider()->{"assert{$this->entityName}Deleted"}($entity);
-
-        Bus::assertDispatched($this->deleteJob);
-
-        return $this;
+            return true;
+        });
     }
 }

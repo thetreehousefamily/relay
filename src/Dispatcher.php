@@ -3,9 +3,8 @@
 namespace TheTreehouse\Relay;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Bus\PendingDispatch;
+use TheTreehouse\Relay\Jobs\RelayEntityAction;
 use TheTreehouse\Relay\Support\Contracts\RelayContract;
-use TheTreehouse\Relay\Support\Contracts\RelayJobContract;
 
 class Dispatcher
 {
@@ -35,21 +34,7 @@ class Dispatcher
      */
     public function relayCreatedContact(Model $contact): Dispatcher
     {
-        if (! $this->relay->supportsContacts()) {
-            return $this;
-        }
-
-        foreach ($this->relay->getProviders() as $provider) {
-            if (! $provider->supportsContacts() || $provider->contactExists($contact)) {
-                continue;
-            }
-
-            $job = $provider->createContactJob($contact);
-
-            $this->dispatch($job);
-        }
-
-        return $this;
+        return $this->processCreated($contact, RelayEntityAction::ENTITY_CONTACT);
     }
 
     /**
@@ -60,23 +45,7 @@ class Dispatcher
      */
     public function relayUpdatedContact(Model $contact): Dispatcher
     {
-        if (! $this->relay->supportsContacts()) {
-            return $this;
-        }
-
-        foreach ($this->relay->getProviders() as $provider) {
-            if (! $provider->supportsContacts()) {
-                return $this;
-            }
-
-            $job = $provider->contactExists($contact)
-                ? $provider->updateContactJob($contact)
-                : $provider->createContactJob($contact);
-
-            $this->dispatch($job);
-        }
-
-        return $this;
+        return $this->processUpdated($contact, RelayEntityAction::ENTITY_CONTACT);
     }
 
     /**
@@ -87,21 +56,7 @@ class Dispatcher
      */
     public function relayDeletedContact(Model $contact): Dispatcher
     {
-        if (! $this->relay->supportsContacts()) {
-            return $this;
-        }
-
-        foreach ($this->relay->getProviders() as $provider) {
-            if (! $provider->supportsContacts()) {
-                return $this;
-            }
-
-            if ($provider->contactExists($contact)) {
-                $this->dispatch($provider->deleteContactJob($contact));
-            }
-        }
-
-        return $this;
+        return $this->processDeleted($contact, RelayEntityAction::ENTITY_CONTACT);
     }
 
     /**
@@ -112,21 +67,7 @@ class Dispatcher
      */
     public function relayCreatedOrganization(Model $organization): Dispatcher
     {
-        if (! $this->relay->supportsOrganizations()) {
-            return $this;
-        }
-
-        foreach ($this->relay->getProviders() as $provider) {
-            if (! $provider->supportsOrganizations() || $provider->organizationExists($organization)) {
-                continue;
-            }
-
-            $job = $provider->createOrganizationJob($organization);
-            
-            $this->dispatch($job);
-        }
-
-        return $this;
+        return $this->processCreated($organization, RelayEntityAction::ENTITY_ORGANIZATION);
     }
 
     /**
@@ -137,23 +78,7 @@ class Dispatcher
      */
     public function relayUpdatedOrganization(Model $organization): Dispatcher
     {
-        if (! $this->relay->supportsOrganizations()) {
-            return $this;
-        }
-
-        foreach ($this->relay->getProviders() as $provider) {
-            if (! $provider->supportsOrganizations()) {
-                return $this;
-            }
-
-            $job = $provider->organizationExists($organization)
-                ? $provider->updateOrganizationJob($organization)
-                : $provider->createOrganizationJob($organization);
-
-            $this->dispatch($job);
-        }
-
-        return $this;
+        return $this->processUpdated($organization, RelayEntityAction::ENTITY_ORGANIZATION);
     }
 
     /**
@@ -164,31 +89,122 @@ class Dispatcher
      */
     public function relayDeletedOrganization(Model $organization): Dispatcher
     {
-        if (! $this->relay->supportsOrganizations()) {
+        return $this->processDeleted($organization, RelayEntityAction::ENTITY_ORGANIZATION);
+    }
+
+    /**
+     * Process a created entity
+     * 
+     * @param \Illuminate\Database\Eloquent\Model $entity
+     * @param string $entityType
+     * @return self
+     */
+    protected function processCreated(Model $entity, string $entityType): Dispatcher
+    {
+        if (! $this->relay->{"supports".ucfirst($entityType)."s"}()) {
             return $this;
         }
 
         foreach ($this->relay->getProviders() as $provider) {
-            if (! $provider->supportsOrganizations()) {
-                return $this;
+            if (! $provider->{"supports".ucfirst($entityType)."s"}() || $provider->{"{$entityType}Exists"}($entity)) {
+                continue;
             }
 
-            if ($provider->organizationExists($organization)) {
-                $this->dispatch($provider->deleteOrganizationJob($organization));
-            }
+            $this->dispatch(
+                $entity,
+                $entityType,
+                RelayEntityAction::ACTION_CREATE,
+                $provider
+            );
         }
 
         return $this;
     }
 
     /**
-     * Dispatch the provided job instance
-     *
-     * @param \TheTreehouse\Relay\Support\Contracts\RelayJobContract $job
-     * @return \Illuminate\Foundation\Bus\PendingDispatch
+     * Process an updated entity
+     * 
+     * @param \Illuminate\Database\Eloquent\Model $entity
+     * @param string $entityType
+     * @return self
      */
-    protected function dispatch(RelayJobContract $job): PendingDispatch
+    protected function processUpdated(Model $entity, string $entityType): Dispatcher
     {
-        return new PendingDispatch($job);
+        if (! $this->relay->{"supports".ucfirst($entityType)."s"}()) {
+            return $this;
+        }
+
+        foreach ($this->relay->getProviders() as $provider) {
+            if (! $provider->{"supports".ucfirst($entityType)."s"}()) {
+                continue;
+            }
+
+            $this->dispatch(
+                $entity,
+                $entityType,
+                (
+                    $provider->{"{$entityType}Exists"}($entity)
+                    ? RelayEntityAction::ACTION_UPDATE
+                    : RelayEntityAction::ACTION_CREATE
+                ),
+                $provider
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Process a deleted entity
+     * 
+     * @param \Illuminate\Database\Eloquent\Model $entity
+     * @param string $entityType
+     * @return self
+     */
+    protected function processDeleted(Model $entity, string $entityType): Dispatcher
+    {
+        if (! $this->relay->{"supports".ucfirst($entityType)."s"}()) {
+            return $this;
+        }
+
+        foreach ($this->relay->getProviders() as $provider) {
+            if (
+                ! $provider->{"supports".ucfirst($entityType)."s"}()
+                || ! $provider->{"{$entityType}Exists"}($entity)
+            ) {
+                continue;
+            }
+
+            $this->dispatch(
+                $entity,
+                $entityType,
+                RelayEntityAction::ACTION_DELETE,
+                $provider
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Configure and dispatch a relay job
+     *
+     * @param \Illuminate\Database\Eloquent\Model $entity
+     * @param string $entityType
+     * @param string $action
+     * @param \TheTreehouse\Relay\AbstractProvider $provider
+     * @return self
+     */
+    protected function dispatch(Model $entity, string $entityType, string $action, AbstractProvider $provider): self
+    {
+        RelayEntityAction::dispatch(
+            $entity,
+            $entityType,
+            $action,
+            $provider
+
+        );
+
+        return $this;
     }
 }
