@@ -4,13 +4,11 @@ namespace TheTreehouse\Relay;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use TheTreehouse\Relay\Concerns\Provider\GeneratesJobs;
 use TheTreehouse\Relay\Concerns\Provider\ProcessesIncomingOperations;
 use TheTreehouse\Relay\Exceptions\ProviderSupportException;
 
 abstract class AbstractProvider
 {
-    use GeneratesJobs;
     use ProcessesIncomingOperations;
 
     /**
