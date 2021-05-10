@@ -22,13 +22,8 @@ class RelayEntityAction
 
     /**
      * The entity to relay
-<<<<<<< HEAD
      * 
      * @var \Illuminate\Database\Eloquent\Model
-=======
-     *
-     * @var \Illuminate\Eloquent\Model
->>>>>>> f883d7301e9957ebbb3b20c565f3db2442d7ea5d
      */
     public $entity;
 
