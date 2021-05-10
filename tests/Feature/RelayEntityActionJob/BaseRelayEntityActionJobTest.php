@@ -29,7 +29,37 @@ abstract class BaseRelayEntityActionJobTest extends TestCase
         $this->fakeProvider()->{"assert{$this->entityUcFirst()}Created"}($model);
     }
 
-    // TODO: Rest of Actions
+    public function test_it_updates_entity()
+    {
+        $model = new $this->entityModelClass;
+
+        $job = new RelayEntityAction(
+            $model,
+            $this->entity,
+            RelayEntityAction::ACTION_UPDATE,
+            $this->fakeProvider()
+        );
+
+        $job->handle();
+
+        $this->fakeProvider()->{"assert{$this->entityUcFirst()}Updated"}($model);
+    }
+
+    public function test_it_deletes_entity()
+    {
+        $model = new $this->entityModelClass;
+
+        $job = new RelayEntityAction(
+            $model,
+            $this->entity,
+            RelayEntityAction::ACTION_DELETE,
+            $this->fakeProvider()
+        );
+
+        $job->handle();
+
+        $this->fakeProvider()->{"assert{$this->entityUcFirst()}Deleted"}($model);
+    }
 
     private function entityUcFirst(): string
     {

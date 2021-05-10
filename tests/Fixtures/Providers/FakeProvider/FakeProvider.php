@@ -91,57 +91,37 @@ class FakeProvider extends AbstractProvider
         $this->createdOrganizations[] = $organization;
     }
 
-    // /**
-    //  * Return a stub job that would update a contact on this fictitious service
-    //  *
-    //  * @param \Illuminate\Database\Eloquent\Model $contact
-    //  * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
-    //  */
-    // public function updateContactJob(Model $contact): RelayJobContract
-    // {
-    //     $this->updatedContacts[] = $contact;
+    /**
+     * @inheritdoc
+     */
+    public function contactUpdated(Model $contact)
+    {
+        $this->updatedContacts[] = $contact;
+    }
 
-    //     return parent::updateContactJob($contact);
-    // }
+    /**
+     * @inheritdoc
+     */
+    public function organizationUpdated(Model $organization)
+    {
+        $this->updatedOrganizations[] = $organization;
+    }
 
-    // /**
-    //  * Return a stub job that would update an organization on this fictitious service
-    //  *
-    //  * @param \Illuminate\Database\Eloquent\Model $organization
-    //  * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
-    //  */
-    // public function updateOrganizationJob(Model $organization): RelayJobContract
-    // {
-    //     $this->updatedOrganizations[] = $organization;
+    /**
+     * @inheritdoc
+     */
+    public function contactDeleted(Model $contact)
+    {
+        $this->deletedContacts[] = $contact;
+    }
 
-    //     return parent::updateOrganizationJob($organization);
-    // }
-
-    // /**
-    //  * Return a stub job that would delete a contact on this fictitious service
-    //  *
-    //  * @param \Illuminate\Database\Eloquent\Model $contact
-    //  * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
-    //  */
-    // public function deleteContactJob(Model $contact): RelayJobContract
-    // {
-    //     $this->deletedContacts[] = $contact;
-
-    //     return parent::deleteContactJob($contact);
-    // }
-
-    // /**
-    //  * Return a stub job that would delete an organization on this fictitious service
-    //  *
-    //  * @param \Illuminate\Database\Eloquent\Model $organization
-    //  * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
-    //  */
-    // public function deleteOrganizationJob(Model $organization): RelayJobContract
-    // {
-    //     $this->deletedOrganizations[] = $organization;
-
-    //     return parent::deleteOrganizationJob($organization);
-    // }
+    /**
+     * @inheritdoc
+     */
+    public function organizationDeleted(Model $organization)
+    {
+        $this->deletedOrganizations[] = $organization;
+    }
 
     /**
      * Assert that a contact was created. Optionally, assert that the provided contact was

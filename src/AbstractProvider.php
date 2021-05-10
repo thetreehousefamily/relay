@@ -55,60 +55,6 @@ abstract class AbstractProvider
     protected $organizationModelColumn;
 
     /**
-     * If the provider supports contacts, the class of the create contact job. If not
-     * provided, one will be automatically generated based on the implementing class'
-     * name.
-     *
-     * @var string|null
-     */
-    protected $createContactJob;
-
-    /**
-     * If the provider supports organizations, the class of the create organization job.
-     * If not provided, one will be automatically generated based on the implementing class'
-     * name.
-     *
-     * @var string|null
-     */
-    protected $createOrganizationJob;
-
-    /**
-     * If the provider supports contacts, the class of the update contact job. If not
-     * provided, one will be automatically generated based on the implementing class'
-     * name.
-     *
-     * @var string|null
-     */
-    protected $updateContactJob;
-
-    /**
-     * If the provider supports organizations, the class of the update organization job.
-     * If not provided, one will be automatically generated based on the implementing class'
-     * name.
-     *
-     * @var string|null
-     */
-    protected $updateOrganizationJob;
-
-    /**
-     * If the provider supports contacts, the class of the delete contact job. If not
-     * provided, one will be automatically generated based on the implementing class'
-     * name.
-     *
-     * @var string|null
-     */
-    protected $deleteContactJob;
-
-    /**
-     * If the provider supports organizations, the class of the delete organization job.
-     * If not provided, one will be automatically generated based on the implementing class'
-     * name.
-     *
-     * @var string|null
-     */
-    protected $deleteOrganizationJob;
-
-    /**
      * Get the name of this provider
      *
      * @return string
