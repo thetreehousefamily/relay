@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use TheTreehouse\Relay\Dispatcher;
 use TheTreehouse\Relay\Facades\Relay;
 use TheTreehouse\Relay\Jobs\RelayEntityAction;
-use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\FakeProvider;
+use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider;
 use TheTreehouse\Relay\Tests\TestCase;
 
 abstract class BaseDispatcherTest extends TestCase
@@ -26,27 +26,6 @@ abstract class BaseDispatcherTest extends TestCase
      * @var string
      */
     protected $entityModelClass;
-
-    /**
-     * The create job class for the entity, instantiated by Fake Provider
-     *
-     * @var string
-     */
-    protected $createJob;
-
-    /**
-     * The update job class for the entity, instantiated by Fake Provider
-     *
-     * @var string
-     */
-    protected $updateJob;
-
-    /**
-     * The delete job class for the entity, instantiated by Fake Provider
-     *
-     * @var string
-     */
-    protected $deleteJob;
 
     public function test_it_does_not_relay_created_if_entity_not_supported_by_application()
     {

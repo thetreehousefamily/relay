@@ -1,11 +1,10 @@
 <?php
 
-namespace TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider;
+namespace TheTreehouse\Relay\Tests\Fixtures\Providers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Testing\Assert as PHPUnit;
 use TheTreehouse\Relay\AbstractProvider;
-use TheTreehouse\Relay\Support\Contracts\RelayJobContract;
 
 class FakeProvider extends AbstractProvider
 {
