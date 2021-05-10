@@ -185,6 +185,7 @@ abstract class BaseDispatcherTest extends TestCase
                 || $job->provider !== FakeProvider::class
             ) {
                 $this->fail('Relay Entity Action job was misconfigured');
+
                 return false;
             }
 

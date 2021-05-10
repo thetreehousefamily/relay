@@ -22,35 +22,35 @@ class RelayEntityAction
 
     /**
      * The entity to relay
-     * 
+     *
      * @var \Illuminate\Eloquent\Model
      */
     public $entity;
 
     /**
      * The type of entity being relayed
-     * 
+     *
      * @var string
      */
     public $entityType;
 
     /**
      * The action being relayed
-     * 
+     *
      * @var string
      */
     public $action;
 
     /**
      * The provider class to relay to
-     * 
+     *
      * @var string
      */
     public $provider;
 
     /**
      * Instantiate a new Relay Job
-     * 
+     *
      * @param \Illuminate\Eloquent\Model $entity
      * @param string $entityType One of ENTITY_CONTACT or ENTITY_ORGANIZATION
      * @param string $action One of ACTION_CREATE, ACTION_UPDATE or ACTION_DELETE
@@ -67,7 +67,7 @@ class RelayEntityAction
 
     /**
      * Handle the job
-     * 
+     *
      * @return void
      */
     public function handle()
@@ -80,8 +80,8 @@ class RelayEntityAction
     /**
      * Resolve the provider from the container from the provided class name during
      * instantiation.
-     * 
-     * @return \TheTreehouse\Relay\AbstractProvider 
+     *
+     * @return \TheTreehouse\Relay\AbstractProvider
      */
     private function resolveProvider(): AbstractProvider
     {
@@ -90,7 +90,7 @@ class RelayEntityAction
 
     /**
      * Format the method name string for a call to the provider
-     * 
+     *
      * @return string
      */
     private function formatMethodName(): string
