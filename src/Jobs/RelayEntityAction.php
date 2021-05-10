@@ -22,7 +22,7 @@ class RelayEntityAction
 
     /**
      * The entity to relay
-     * 
+     *
      * @var \Illuminate\Database\Eloquent\Model
      */
     public $entity;
@@ -50,7 +50,7 @@ class RelayEntityAction
 
     /**
      * Instantiate a new Relay Job
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $entity
      * @param string $entityType One of ENTITY_CONTACT or ENTITY_ORGANIZATION
      * @param string $action One of ACTION_CREATE, ACTION_UPDATE or ACTION_DELETE
