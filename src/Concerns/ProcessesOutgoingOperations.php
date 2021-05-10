@@ -1,6 +1,6 @@
 <?php
 
-namespace TheTreehouse\Relay\Concerns\Provider;
+namespace TheTreehouse\Relay\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 

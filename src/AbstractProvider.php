@@ -4,8 +4,8 @@ namespace TheTreehouse\Relay;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use TheTreehouse\Relay\Concerns\Provider\ProcessesIncomingOperations;
-use TheTreehouse\Relay\Concerns\Provider\ProcessesOutgoingOperations;
+use TheTreehouse\Relay\Concerns\ProcessesIncomingOperations;
+use TheTreehouse\Relay\Concerns\ProcessesOutgoingOperations;
 use TheTreehouse\Relay\Exceptions\ProviderSupportException;
 
 abstract class AbstractProvider
