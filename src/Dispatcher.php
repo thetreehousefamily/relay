@@ -94,7 +94,7 @@ class Dispatcher
 
     /**
      * Process a created entity
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $entity
      * @param string $entityType
      * @return self
@@ -123,7 +123,7 @@ class Dispatcher
 
     /**
      * Process an updated entity
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $entity
      * @param string $entityType
      * @return self
@@ -156,7 +156,7 @@ class Dispatcher
 
     /**
      * Process a deleted entity
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $entity
      * @param string $entityType
      * @return self
@@ -202,7 +202,6 @@ class Dispatcher
             $entityType,
             $action,
             $provider
-
         );
 
         return $this;
