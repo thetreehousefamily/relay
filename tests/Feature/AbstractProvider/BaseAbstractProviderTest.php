@@ -21,10 +21,4 @@ class HubFakeRelay extends AbstractProvider
     public $supportsOrganizations = true;
     public $contactModelColumn;
     public $organizationModelColumn;
-    public $createContactJob;
-    public $createOrganizationJob;
-    public $updateContactJob;
-    public $updateOrganizationJob;
-    public $deleteContactJob;
-    public $deleteOrganizationJob;
 }

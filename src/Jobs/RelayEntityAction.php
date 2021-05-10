@@ -64,4 +64,37 @@ class RelayEntityAction
         $this->action = $action;
         $this->provider = get_class($provider);
     }
+
+    /**
+     * Handle the job
+     * 
+     * @return void
+     */
+    public function handle()
+    {
+        $provider = $this->resolveProvider();
+
+        $provider->{$this->formatMethodName()}($this->entity);
+    }
+
+    /**
+     * Resolve the provider from the container from the provided class name during
+     * instantiation.
+     * 
+     * @return \TheTreehouse\Relay\AbstractProvider 
+     */
+    private function resolveProvider(): AbstractProvider
+    {
+        return app()->make($this->provider);
+    }
+
+    /**
+     * Format the method name string for a call to the provider
+     * 
+     * @return string
+     */
+    private function formatMethodName(): string
+    {
+        return $this->entityType.ucfirst($this->action).'d';
+    }
 }

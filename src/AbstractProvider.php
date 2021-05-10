@@ -5,11 +5,13 @@ namespace TheTreehouse\Relay;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use TheTreehouse\Relay\Concerns\Provider\ProcessesIncomingOperations;
+use TheTreehouse\Relay\Concerns\Provider\ProcessesOutgoingOperations;
 use TheTreehouse\Relay\Exceptions\ProviderSupportException;
 
 abstract class AbstractProvider
 {
     use ProcessesIncomingOperations;
+    use ProcessesOutgoingOperations;
 
     /**
      * The display name for this provider
