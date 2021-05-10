@@ -1,17 +1,10 @@
 <?php
 
-namespace TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider;
+namespace TheTreehouse\Relay\Tests\Fixtures\Providers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Testing\Assert as PHPUnit;
 use TheTreehouse\Relay\AbstractProvider;
-use TheTreehouse\Relay\Support\Contracts\RelayJobContract;
-use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\CreateFakeContact;
-use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\CreateFakeOrganization;
-use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\DeleteFakeContact;
-use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\DeleteFakeOrganization;
-use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\UpdateFakeContact;
-use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\Jobs\UpdateFakeOrganization;
 
 class FakeProvider extends AbstractProvider
 {
@@ -57,24 +50,6 @@ class FakeProvider extends AbstractProvider
      */
     protected array $deletedOrganizations = [];
 
-    /** @inheritdoc */
-    protected $createContactJob = CreateFakeContact::class;
-
-    /** @inheritdoc */
-    protected $createOrganizationJob = CreateFakeOrganization::class;
-
-    /** @inheritdoc */
-    protected $updateContactJob = UpdateFakeContact::class;
-
-    /** @inheritdoc */
-    protected $updateOrganizationJob = UpdateFakeOrganization::class;
-
-    /** @inheritdoc */
-    protected $deleteContactJob = DeleteFakeContact::class;
-
-    /** @inheritdoc */
-    protected $deleteOrganizationJob = DeleteFakeOrganization::class;
-
     /**
      * Manually override the contacts support
      *
@@ -100,81 +75,51 @@ class FakeProvider extends AbstractProvider
     }
 
     /**
-     * Return a stub job that would create a contact on this fictitious service
-     *
-     * @param \Illuminate\Database\Eloquent\Model $contact
-     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     * @inheritdoc
      */
-    public function createContactJob(Model $contact): RelayJobContract
+    public function contactCreated(Model $contact)
     {
         $this->createdContacts[] = $contact;
-
-        return parent::createContactJob($contact);
     }
 
     /**
-     * Return a stub job that would create an organization on this fictitious service
-     *
-     * @param \Illuminate\Database\Eloquent\Model $organization
-     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     * @inheritdoc
      */
-    public function createOrganizationJob(Model $organization): RelayJobContract
+    public function organizationCreated(Model $organization)
     {
         $this->createdOrganizations[] = $organization;
-
-        return parent::createOrganizationJob($organization);
     }
 
     /**
-     * Return a stub job that would update a contact on this fictitious service
-     *
-     * @param \Illuminate\Database\Eloquent\Model $contact
-     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     * @inheritdoc
      */
-    public function updateContactJob(Model $contact): RelayJobContract
+    public function contactUpdated(Model $contact)
     {
         $this->updatedContacts[] = $contact;
-
-        return parent::updateContactJob($contact);
     }
 
     /**
-     * Return a stub job that would update an organization on this fictitious service
-     *
-     * @param \Illuminate\Database\Eloquent\Model $organization
-     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     * @inheritdoc
      */
-    public function updateOrganizationJob(Model $organization): RelayJobContract
+    public function organizationUpdated(Model $organization)
     {
         $this->updatedOrganizations[] = $organization;
-
-        return parent::updateOrganizationJob($organization);
     }
 
     /**
-     * Return a stub job that would delete a contact on this fictitious service
-     *
-     * @param \Illuminate\Database\Eloquent\Model $contact
-     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     * @inheritdoc
      */
-    public function deleteContactJob(Model $contact): RelayJobContract
+    public function contactDeleted(Model $contact)
     {
         $this->deletedContacts[] = $contact;
-
-        return parent::deleteContactJob($contact);
     }
 
     /**
-     * Return a stub job that would delete an organization on this fictitious service
-     *
-     * @param \Illuminate\Database\Eloquent\Model $organization
-     * @return \TheTreehouse\Relay\Support\Contracts\RelayJobContract
+     * @inheritdoc
      */
-    public function deleteOrganizationJob(Model $organization): RelayJobContract
+    public function organizationDeleted(Model $organization)
     {
         $this->deletedOrganizations[] = $organization;
-
-        return parent::deleteOrganizationJob($organization);
     }
 
     /**

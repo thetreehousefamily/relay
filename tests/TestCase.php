@@ -11,7 +11,7 @@ use TheTreehouse\Relay\Tests\Concerns\ProvidesFakeProvider;
 use TheTreehouse\Relay\Tests\Contracts\UsingFakeRelay;
 use TheTreehouse\Relay\Tests\Fixtures\Models\Contact;
 use TheTreehouse\Relay\Tests\Fixtures\Models\Organization;
-use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\FakeProvider;
+use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider;
 
 class TestCase extends Orchestra
 {

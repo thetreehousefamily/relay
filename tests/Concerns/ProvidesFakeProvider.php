@@ -3,7 +3,7 @@
 namespace TheTreehouse\Relay\Tests\Concerns;
 
 use Illuminate\Contracts\Foundation\Application;
-use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider\FakeProvider;
+use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider;
 
 trait ProvidesFakeProvider
 {
