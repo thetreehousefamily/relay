@@ -77,33 +77,45 @@ class FakeProvider extends AbstractProvider
     /**
      * @inheritdoc
      */
-    public function contactCreated(Model $contact)
+    public function contactCreated(Model $contact, array $outboundProperties)
     {
-        $this->createdContacts[] = $contact;
+        $this->createdContacts[] = [
+            'entity' => $contact,
+            'outboundProperties' => $outboundProperties,
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function organizationCreated(Model $organization)
+    public function organizationCreated(Model $organization, array $outboundProperties)
     {
-        $this->createdOrganizations[] = $organization;
+        $this->createdOrganizations[] = [
+            'entity' => $organization,
+            'outboundProperties' => $outboundProperties,
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function contactUpdated(Model $contact)
+    public function contactUpdated(Model $contact, array $outboundProperties)
     {
-        $this->updatedContacts[] = $contact;
+        $this->updatedContacts[] = [
+            'entity' => $contact,
+            'outboundProperties' => $outboundProperties,
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function organizationUpdated(Model $organization)
+    public function organizationUpdated(Model $organization, array $outboundProperties)
     {
-        $this->updatedOrganizations[] = $organization;
+        $this->updatedOrganizations[] = [
+            'entity' => $organization,
+            'outboundProperties' => $outboundProperties,
+        ];
     }
 
     /**
@@ -111,7 +123,9 @@ class FakeProvider extends AbstractProvider
      */
     public function contactDeleted(Model $contact)
     {
-        $this->deletedContacts[] = $contact;
+        $this->deletedContacts[] = [
+            'entity' => $contact,
+        ];
     }
 
     /**
@@ -119,7 +133,9 @@ class FakeProvider extends AbstractProvider
      */
     public function organizationDeleted(Model $organization)
     {
-        $this->deletedOrganizations[] = $organization;
+        $this->deletedOrganizations[] = [
+            'entity' => $organization,
+        ];
     }
 
     /**
@@ -127,11 +143,12 @@ class FakeProvider extends AbstractProvider
      * specifically created
      *
      * @param \Illuminate\Database\Eloquent\Model|null $contact
+     * @param array $expectedOutboundProperties
      * @return static
      */
-    public function assertContactCreated($contact = null): self
+    public function assertContactCreated($contact = null, array $expectedOutboundProperties = []): self
     {
-        return $this->assertEntityActioned('create', 'contact', $contact);
+        return $this->assertEntityActioned('create', 'contact', $contact, $expectedOutboundProperties);
     }
 
     /**
@@ -149,11 +166,12 @@ class FakeProvider extends AbstractProvider
      * was specifically created
      *
      * @param \Illuminate\Database\Eloquent\Model|null $organization
+     * @param array $expectedOutboundProperties
      * @return static
      */
-    public function assertOrganizationCreated($organization = null): self
+    public function assertOrganizationCreated($organization = null, array $expectedOutboundProperties = []): self
     {
-        return $this->assertEntityActioned('create', 'organization', $organization);
+        return $this->assertEntityActioned('create', 'organization', $organization, $expectedOutboundProperties);
     }
 
     /**
@@ -171,11 +189,12 @@ class FakeProvider extends AbstractProvider
      * specifically updated
      *
      * @param \Illuminate\Database\Eloquent\Model|null $contact
+     * @param array $expectedOutboundProperties
      * @return static
      */
-    public function assertContactUpdated($contact = null): self
+    public function assertContactUpdated($contact = null, array $expectedOutboundProperties = []): self
     {
-        return $this->assertEntityActioned('update', 'contact', $contact);
+        return $this->assertEntityActioned('update', 'contact', $contact, $expectedOutboundProperties);
     }
 
     /**
@@ -193,11 +212,12 @@ class FakeProvider extends AbstractProvider
      * was specifically updated
      *
      * @param \Illuminate\Database\Eloquent\Model|null $organization
+     * @param array $expectedOutboundProperties
      * @return static
      */
-    public function assertOrganizationUpdated($organization = null): self
+    public function assertOrganizationUpdated($organization = null, array $expectedOutboundProperties = []): self
     {
-        return $this->assertEntityActioned('update', 'organization', $organization);
+        return $this->assertEntityActioned('update', 'organization', $organization, $expectedOutboundProperties);
     }
 
     /**
@@ -254,7 +274,7 @@ class FakeProvider extends AbstractProvider
         return $this->assertNoEntitiesActioned('delete', 'organization');
     }
 
-    private function assertEntityActioned($action, $entity, $model = null): self
+    private function assertEntityActioned($action, $entity, $model = null, $expectedOutboundProperties = []): self
     {
         $actionPast = $this->pastTense($action);
 
@@ -267,11 +287,25 @@ class FakeProvider extends AbstractProvider
         );
 
         if ($model) {
-            PHPUnit::assertContains(
-                $model,
-                $bucket,
-                "The expected $entity was not $actionPast"
-            );
+            $found = false;
+            foreach ($bucket as $group) {
+                if ($group['entity'] === $model) {
+                    if ($expectedOutboundProperties) {
+                        PHPUnit::assertSame(
+                            $expectedOutboundProperties,
+                            $group['outboundProperties']
+                        );
+                    }
+
+                    $found = true;
+
+                    break;
+                }
+            }
+
+            if (! $found) {
+                PHPUnit::fail("The expected $entity was not $actionPast");
+            }
         }
         
         return $this;

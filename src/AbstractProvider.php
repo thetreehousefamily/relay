@@ -19,6 +19,13 @@ abstract class AbstractProvider
      * @var string|null
      */
     protected $name;
+
+    /**
+     * The core relay configuration key for this provider
+     *
+     * @var string|null
+     */
+    protected $configKey;
     
     /**
      * Determines whether this provider supports the contact entity
@@ -70,6 +77,22 @@ abstract class AbstractProvider
         }
 
         return $this->name;
+    }
+
+    /**
+     * Get the config key of this provider
+     *
+     * @return string
+     */
+    public function configKey() : string
+    {
+        if (! $this->configKey) {
+            $this->configKey = (string) Str::of($this->name())
+                ->snake()
+                ->prepend('relay.providers.');
+        }
+
+        return $this->configKey;
     }
 
     /**

@@ -24,6 +24,22 @@ class AbstractProviderTest extends BaseAbstractProviderTest
         $this->assertEquals('Hub Fake', $provider->name());
     }
 
+    public function test_it_returns_predefined_config_key()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        $provider->configKey = 'predefined.config.key';
+
+        $this->assertEquals('predefined.config.key', $provider->configKey());
+    }
+
+    public function test_it_correctly_guesses_config_key()
+    {
+        $provider = $this->newAbstractProviderImplementation();
+
+        $this->assertEquals('relay.providers.hub_fake', $provider->configKey());
+    }
+
     public function test_it_returns_predefined_contact_model_column()
     {
         $provider = $this->newAbstractProviderImplementation();

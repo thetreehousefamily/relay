@@ -10,4 +10,12 @@ class IncomingOrganizationOperationsTest extends BaseIncomingOperationsTest
     protected $entity = 'organization';
 
     protected $modelClass = Organization::class;
+
+    protected $incomingProperties = [
+        'companyName' => 'Company XYZ',
+    ];
+
+    protected $expectedModelProperties = [
+        'name' => 'Company XYZ',
+    ];
 }

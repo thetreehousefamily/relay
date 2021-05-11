@@ -14,6 +14,12 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
     /** @var string */
     protected $modelClass;
 
+    /** @var array */
+    protected $incomingProperties;
+
+    /** @var array */
+    protected $expectedModelProperties;
+
     private $supportOperations = [
         'created',
         'updated',
@@ -46,66 +52,92 @@ abstract class BaseIncomingOperationsTest extends BaseAbstractProviderTest imple
     {
         $provider = $this->newAbstractProviderImplementation();
 
-        $model = $provider->{"created{$this->ucEntity()}"}($id = 'hub_fake_id_'.Str::random(), ['name' => 'Josephine']);
+        /** @var \Illuminate\Database\Eloquent\Model $model */
+        $model = $provider->{"created{$this->ucEntity()}"}(
+            $id = 'hub_fake_id_'.Str::random(),
+            $this->incomingProperties
+        );
 
         $this->assertInstanceOf($this->modelClass, $model);
-
         $this->assertEquals($id, $model->hub_fake_id);
-        $this->assertEquals('Josephine', $model->name);
+
+        foreach ($this->expectedModelProperties as $key => $value) {
+            $this->assertEquals($value, $model->{$key});
+        }
     }
 
     public function test_it_creates_existing_entity_from_provider()
     {
-        $existing = $this->modelClass::create([
-            'hub_fake_id' => $id = 'hub_fake_id'.Str::random(),
-            'name' => 'Josie',
-        ]);
+        $existing = $this->modelClass::create(
+            array_merge(
+                ['hub_fake_id' => $id = 'hub_fake_id'.Str::random()],
+                $this->expectedModelProperties
+            )
+        );
 
         $provider = $this->newAbstractProviderImplementation();
 
-        $model = $provider->{"created{$this->ucEntity()}"}($id, ['name' => 'Josephine']);
+        $model = $provider->{"created{$this->ucEntity()}"}(
+            $id,
+            $this->incomingProperties
+        );
 
         $this->assertInstanceOf($this->modelClass, $model);
         $this->assertEquals($existing->id, $model->id);
         $this->assertEquals($id, $model->hub_fake_id);
-        $this->assertEquals('Josephine', $model->name);
+
+        foreach ($this->expectedModelProperties as $key => $value) {
+            $this->assertEquals($value, $model->{$key});
+        }
     }
 
     public function test_it_updates_entity_from_provider()
     {
-        $existing = $this->modelClass::create([
-            'hub_fake_id' => $id = 'hub_fake_id'.Str::random(),
-            'name' => 'Josie',
-        ]);
+        $existing = $this->modelClass::create(
+            array_merge(
+                ['hub_fake_id' => $id = 'hub_fake_id'.Str::random()],
+                $this->expectedModelProperties
+            )
+        );
 
         $provider = $this->newAbstractProviderImplementation();
 
-        $model = $provider->{"updated{$this->ucEntity()}"}($id, ['name' => 'Josephine']);
+        $model = $provider->{"updated{$this->ucEntity()}"}($id, $this->incomingProperties);
 
         $this->assertInstanceOf($this->modelClass, $model);
         $this->assertEquals($existing->id, $model->id);
         $this->assertEquals($id, $model->hub_fake_id);
-        $this->assertEquals('Josephine', $model->name);
+
+        foreach ($this->expectedModelProperties as $key => $value) {
+            $this->assertEquals($value, $model->{$key});
+        }
     }
 
     public function test_it_upserts_entity_from_provider()
     {
         $provider = $this->newAbstractProviderImplementation();
 
-        $model = $provider->{"updated{$this->ucEntity()}"}($id = 'hub_fake_id_'.Str::random(), ['name' => 'Josephine']);
+        $model = $provider->{"updated{$this->ucEntity()}"}(
+            $id = 'hub_fake_id_'.Str::random(),
+            $this->incomingProperties
+        );
 
         $this->assertInstanceOf($this->modelClass, $model);
-
         $this->assertEquals($id, $model->hub_fake_id);
-        $this->assertEquals('Josephine', $model->name);
+
+        foreach ($this->expectedModelProperties as $key => $value) {
+            $this->assertEquals($value, $model->{$key});
+        }
     }
 
     public function test_it_deletes_entity_from_provider()
     {
-        $this->modelClass::create([
-            'hub_fake_id' => $id = 'hub_fake_id'.Str::random(),
-            'name' => 'Josie',
-        ]);
+        $this->modelClass::create(
+            array_merge(
+                ['hub_fake_id' => $id = 'hub_fake_id'.Str::random()],
+                $this->expectedModelProperties
+            )
+        );
 
         $provider = $this->newAbstractProviderImplementation();
 

@@ -4,6 +4,7 @@ namespace TheTreehouse\Relay\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use TheTreehouse\Relay\Facades\Relay;
+use TheTreehouse\Relay\PropertyMapper;
 
 trait ProcessesIncomingOperations
 {
@@ -96,11 +97,10 @@ trait ProcessesIncomingOperations
 
         // Process upsert operations
         if ($action === 'created' || $action === 'updated') {
-            $model = $this->firstOrNewEntity($entity, $id)
-                ->fill(array_merge(
-                    [$this->{$entity."ModelColumn"}() => $id],
-                    $properties
-                ));
+            $model = $this->firstOrNewEntity($entity, $id);
+
+            (new PropertyMapper($model, $entity, $this))
+                ->setInbound($properties);
     
             $model->save();
 
