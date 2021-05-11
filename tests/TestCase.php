@@ -53,7 +53,7 @@ class TestCase extends Orchestra
         config(['relay.providers.fake_provider.contact_fields' => [
             'first_name' => 'firstName',
             'last_name' => 'lastName',
-            'email' => 'email'
+            'email' => 'email',
         ]]);
 
         config(['relay.providers.fake_provider.organization_fields' => [

@@ -17,7 +17,7 @@ class PropertyMapperTest extends TestCase
                 'property_1' => 'prop1',
                 'property_2' => 'prop2',
                 'property_4' => 'prop4',
-            ]
+            ],
         ]);
     }
 
@@ -46,7 +46,7 @@ class PropertyMapperTest extends TestCase
         $expected = [
             'property_1' => 'Prop 1 Value',
             'property_2' => 'Prop 2 Value',
-            'property_4' => 'Prop 4 Value'
+            'property_4' => 'Prop 4 Value',
         ];
 
         $model = new ExamplePropertyModel($expected);
@@ -61,7 +61,7 @@ class PropertyMapperTest extends TestCase
                 'prop1' => 'Prop 1 Value',
                 'prop2' => 'Prop 2 Value',
                 'prop3' => 'Prop 3 Value (Should not be mapped)',
-                'prop4' => 'Prop 4 Value'
+                'prop4' => 'Prop 4 Value',
             ])
         );
     }
@@ -72,7 +72,7 @@ class PropertyMapperTest extends TestCase
             'property_1' => 'New Prop 1',
             'property_2' => 'New Prop 2',
             'property_3' => 'Property 3 Value',
-            'property_4' => 'New Prop 4'
+            'property_4' => 'New Prop 4',
         ];
 
         $model = new ExamplePropertyModel($expected);
@@ -85,7 +85,7 @@ class PropertyMapperTest extends TestCase
             'prop1' => 'New Prop 1',
             'prop2' => '_New Prop 2',
             'prop3' => 'Prop 3 Value (Should not be mapped)',
-            'prop4' => '_New Prop 4'
+            'prop4' => '_New Prop 4',
         ]);
 
         $this->assertEquals(
@@ -104,7 +104,7 @@ class ExamplePropertyModel extends Model
         parent::__construct([
             'property_1' => 'Property 1 Value',
             'property_2' => [
-                'Property 2 Value'
+                'Property 2 Value',
             ],
             'property_3' => 'Property 3 Value',
             'property_4' => 'Should Convert to Null',

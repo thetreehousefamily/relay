@@ -13,28 +13,28 @@ class PropertyMapper
 
     /**
      * The entity to map to/from
-     * 
+     *
      * @var \Illuminate\Database\Eloquent\Model
      */
     protected $entity;
 
     /**
      * The entity type, either 'contact' or 'organization'
-     * 
+     *
      * @var string
      */
     protected $entityType;
     
     /**
      * The provider to map to/from
-     * 
+     *
      * @var \TheTreehouse\Relay\AbstractProvider
      */
     protected $provider;
 
     /**
      * Instantiate a new mapper instance
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $entity
      * @param string $entityType
      * @param \TheTreehouse\Relay\AbstractProvider $provider
@@ -49,7 +49,7 @@ class PropertyMapper
 
     /**
      * Generate an array of properties mapped from the model, to the provider
-     * 
+     *
      * @return array
      */
     public function mapOutbound(): array
@@ -71,7 +71,7 @@ class PropertyMapper
 
     /**
      * Generate an array of properties mapped from the provider to the model
-     * 
+     *
      * @param array $inboundProperties
      * @return array
      */
@@ -80,7 +80,7 @@ class PropertyMapper
         $properties = [];
 
         foreach ($this->getMap() as $modelKey => $providerKey) {
-            if (!isset($inboundProperties[$providerKey])) {
+            if (! isset($inboundProperties[$providerKey])) {
                 continue;
             }
 
@@ -93,7 +93,7 @@ class PropertyMapper
     /**
      * Calculate the inbound properties from the provided data, and set these
      * on the model
-     * 
+     *
      * @param array $inboundProperties
      * @return self
      */
@@ -116,7 +116,7 @@ class PropertyMapper
 
     /**
      * Retrieve the map from the configuration
-     * 
+     *
      * @return array
      */
     private function getMap(): array
@@ -131,7 +131,7 @@ class PropertyMapper
     /**
      * Generate the accessor/mutator method names for the specific provider and
      * for relay generally
-     * 
+     *
      * @param string $action Either get or set
      * @param string $modelKey The standard form of the model key
      * @return string|null

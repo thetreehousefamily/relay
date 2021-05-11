@@ -81,7 +81,7 @@ class FakeProvider extends AbstractProvider
     {
         $this->createdContacts[] = [
             'entity' => $contact,
-            'outboundProperties' => $outboundProperties
+            'outboundProperties' => $outboundProperties,
         ];
     }
 
@@ -92,7 +92,7 @@ class FakeProvider extends AbstractProvider
     {
         $this->createdOrganizations[] = [
             'entity' => $organization,
-            'outboundProperties' => $outboundProperties
+            'outboundProperties' => $outboundProperties,
         ];
     }
 
@@ -103,7 +103,7 @@ class FakeProvider extends AbstractProvider
     {
         $this->updatedContacts[] = [
             'entity' => $contact,
-            'outboundProperties' => $outboundProperties
+            'outboundProperties' => $outboundProperties,
         ];
     }
 
@@ -114,7 +114,7 @@ class FakeProvider extends AbstractProvider
     {
         $this->updatedOrganizations[] = [
             'entity' => $organization,
-            'outboundProperties' => $outboundProperties
+            'outboundProperties' => $outboundProperties,
         ];
     }
 
@@ -124,7 +124,7 @@ class FakeProvider extends AbstractProvider
     public function contactDeleted(Model $contact)
     {
         $this->deletedContacts[] = [
-            'entity' => $contact
+            'entity' => $contact,
         ];
     }
 
@@ -134,7 +134,7 @@ class FakeProvider extends AbstractProvider
     public function organizationDeleted(Model $organization)
     {
         $this->deletedOrganizations[] = [
-            'entity' => $organization
+            'entity' => $organization,
         ];
     }
 
@@ -298,11 +298,12 @@ class FakeProvider extends AbstractProvider
                     }
 
                     $found = true;
+
                     break;
                 }
             }
 
-            if (!$found) {
+            if (! $found) {
                 PHPUnit::fail("The expected $entity was not $actionPast");
             }
         }
