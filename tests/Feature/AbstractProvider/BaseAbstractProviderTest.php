@@ -7,6 +7,20 @@ use TheTreehouse\Relay\Tests\TestCase;
 
 abstract class BaseAbstractProviderTest extends TestCase
 {
+    protected function configureRelay()
+    {
+        parent::configureRelay();
+
+        config(['relay.providers.hub_fake.contact_fields' => [
+            'first_name' => 'firstName',
+            'last_name' => 'lastName',
+        ]]);
+
+        config(['relay.providers.hub_fake.organization_fields' => [
+            'name' => 'companyName',
+        ]]);
+    }
+
     protected function newAbstractProviderImplementation(): AbstractProvider
     {
         return new HubFakeRelay;

@@ -10,4 +10,14 @@ class IncomingContactOperationsTest extends BaseIncomingOperationsTest
     protected $entity = 'contact';
 
     protected $modelClass = Contact::class;
+
+    protected $incomingProperties = [
+        'firstName' => 'Josephine',
+        'lastName' => 'Smith',
+    ];
+
+    protected $expectedModelProperties = [
+        'first_name' => 'Josephine',
+        'last_name' => 'Smith',
+    ];
 }
