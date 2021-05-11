@@ -58,7 +58,7 @@ class PropertyMapper
 
         foreach ($this->getMap() as $modelKey => $providerKey) {
             if ($accessorMethod = $this->generateModelMethodName('get', $modelKey)) {
-                $properties[$providerKey] = $this->entity->{(string) $accessorMethod}($this->entity->{$modelKey});
+                $properties[$providerKey] = $this->entity->{$accessorMethod}($this->entity->{$modelKey});
 
                 continue;
             }
@@ -144,7 +144,7 @@ class PropertyMapper
                 ->prepend($action)
                 ->append('AttributeFor');
 
-        $providerMethod = (string) Str::of($baseAccessor)
+        $providerMethod = (string) Str::of((string) $baseAccessor)
             ->append(
                 Str::of($this->provider->name())
                     ->camel()
