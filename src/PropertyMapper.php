@@ -57,44 +57,61 @@ class PropertyMapper
         $properties = [];
 
         foreach ($this->getMap() as $modelKey => $providerKey) {
-            // Check to see if there's a specific accessor for this provider, or
-            // if there's a specific relay accessor.
-            $baseAccessor = Str::of($modelKey)
-                ->camel()
-                ->ucfirst()
-                ->prepend('get')
-                ->append('AttributeFor');
-
-            $providerAccessor = (string) Str::of($baseAccessor)
-                ->append(
-                    Str::of($this->provider->name())
-                        ->camel()
-                        ->ucfirst()
-                )
-                ->append('Relay');
-                
-            $generalAccessor = $baseAccessor.'Relay';
-
-            $accessorMethod =
-                    method_exists($this->entity, $providerAccessor)
-                    ? $providerAccessor
-                    : (
-                        method_exists($this->entity, $generalAccessor)
-                        ? $generalAccessor
-                        : null
-                    );
-
-            if (method_exists($this->entity, $accessorMethod)) {
+            if ($accessorMethod = $this->generateModelMethodName('get', $modelKey)) {
                 $properties[$providerKey] = $this->entity->{(string) $accessorMethod}($this->entity->{$modelKey});
 
                 continue;
             }
 
-            // Otherwise, retrieve value normally
             $properties[$providerKey] = $this->entity->{$modelKey};
         }
 
         return $properties;
+    }
+
+    /**
+     * Generate an array of properties mapped from the provider to the model
+     * 
+     * @param array $inboundProperties
+     * @return array
+     */
+    public function mapInbound(array $inboundProperties): array
+    {
+        $properties = [];
+
+        foreach ($this->getMap() as $modelKey => $providerKey) {
+            if (!isset($inboundProperties[$providerKey])) {
+                continue;
+            }
+
+            $properties[$modelKey] = $inboundProperties[$providerKey];
+        }
+
+        return $properties;
+    }
+
+    /**
+     * Calculate the inbound properties from the provided data, and set these
+     * on the model
+     * 
+     * @param array $inboundProperties
+     * @return self
+     */
+    public function setInbound(array $inboundProperties): self
+    {
+        $inboundProperties = $this->mapInbound($inboundProperties);
+
+        foreach ($inboundProperties as $modelKey => $value) {
+            if ($mutatorMethod = $this->generateModelMethodName('set', $modelKey)) {
+                $this->entity->{$mutatorMethod}($value);
+
+                continue;
+            }
+
+            $this->entity->{$modelKey} = $value;
+        }
+
+        return $this;
     }
 
     /**
@@ -109,5 +126,42 @@ class PropertyMapper
             .".{$this->entityType}_fields",
             []
         );
+    }
+
+    /**
+     * Generate the accessor/mutator method names for the specific provider and
+     * for relay generally
+     * 
+     * @param string $action Either get or set
+     * @param string $modelKey The standard form of the model key
+     * @return string|null
+     */
+    private function generateModelMethodName(string $action, string $modelKey):? string
+    {
+        $baseAccessor = Str::of($modelKey)
+                ->camel()
+                ->ucfirst()
+                ->prepend($action)
+                ->append('AttributeFor');
+
+        $providerMethod = (string) Str::of($baseAccessor)
+            ->append(
+                Str::of($this->provider->name())
+                    ->camel()
+                    ->ucfirst()
+            )
+            ->append('Relay');
+            
+        $generalMethod = $baseAccessor.'Relay';
+
+        if (method_exists($this->entity, $providerMethod)) {
+            return $providerMethod;
+        }
+
+        if (method_exists($this->entity, $generalMethod)) {
+            return $generalMethod;
+        }
+
+        return null;
     }
 }
