@@ -17,6 +17,7 @@ class HubFakeRelay extends AbstractProvider
 {
     // Increase the visibility of the properties for testing
     public $name;
+    public $configKey;
     public $supportsContacts = true;
     public $supportsOrganizations = true;
     public $contactModelColumn;
