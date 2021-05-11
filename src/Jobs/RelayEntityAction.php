@@ -5,6 +5,7 @@ namespace TheTreehouse\Relay\Jobs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\Dispatchable;
 use TheTreehouse\Relay\AbstractProvider;
+use TheTreehouse\Relay\PropertyMapper;
 
 class RelayEntityAction
 {
@@ -73,8 +74,16 @@ class RelayEntityAction
     public function handle()
     {
         $provider = $this->resolveProvider();
+        
+        $params = [$this->entity];
 
-        $provider->{$this->formatMethodName()}($this->entity);
+        if ($this->action !== self::ACTION_DELETE) {
+            $mapper = new PropertyMapper($this->entity, $this->entityType, $provider);
+
+            $params[] = $mapper->mapOutbound();
+        }
+
+        $provider->{$this->formatMethodName()}(...$params);
     }
 
     /**

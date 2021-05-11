@@ -49,6 +49,16 @@ class TestCase extends Orchestra
     {
         config(['relay.contact' => Contact::class]);
         config(['relay.organization' => Organization::class]);
+
+        config(['relay.providers.fake_provider.contact_fields' => [
+            'first_name' => 'firstName',
+            'last_name' => 'lastName',
+            'email' => 'email'
+        ]]);
+
+        config(['relay.providers.fake_provider.organization_fields' => [
+            'name' => 'companyName',
+        ]]);
     }
 
     protected function relayProviders(): array

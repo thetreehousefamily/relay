@@ -10,9 +10,10 @@ trait ProcessesOutgoingOperations
      * Relay a contact that was created within the application to the provider
      *
      * @param \Illuminate\Database\Eloquent\Model $contact
+     * @param array $outboundProperties
      * @return void
      */
-    public function contactCreated(Model $contact)
+    public function contactCreated(Model $contact, array $outboundProperties)
     {
         return;
     }
@@ -21,9 +22,10 @@ trait ProcessesOutgoingOperations
      * Relay an organization that was created within the application to the provider
      *
      * @param \Illuminate\Database\Eloquent\Model $organization
+     * @param array $outboundProperties
      * @return void
      */
-    public function organizationCreated(Model $organization)
+    public function organizationCreated(Model $organization, array $outboundProperties)
     {
         return;
     }
@@ -32,9 +34,10 @@ trait ProcessesOutgoingOperations
      * Relay a contact that was updated within the application to the provider
      *
      * @param \Illuminate\Database\Eloquent\Model $contact
+     * @param array $outboundProperties
      * @return void
      */
-    public function contactUpdated(Model $contact)
+    public function contactUpdated(Model $contact, array $outboundProperties)
     {
         return;
     }
@@ -43,9 +46,10 @@ trait ProcessesOutgoingOperations
      * Relay an organization that was updated within the application to the provider
      *
      * @param \Illuminate\Database\Eloquent\Model $organization
+     * @param array $outboundProperties
      * @return void
      */
-    public function organizationUpdated(Model $organization)
+    public function organizationUpdated(Model $organization, array $outboundProperties)
     {
         return;
     }
