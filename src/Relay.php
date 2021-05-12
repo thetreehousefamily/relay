@@ -156,6 +156,17 @@ class Relay implements RelayContract
     }
 
     /**
+     * Process relay operations synchronously for the duration of $callback execution
+     *
+     * @param \Closure $callback
+     * @return mixed The return result of $callback
+     */
+    public function sync(\Closure $callback)
+    {
+        return app(Dispatcher::class)->sync($callback);
+    }
+
+    /**
      * Ensure that the provided class name exists, and is a subclass of the provided
      * parent class
      *
