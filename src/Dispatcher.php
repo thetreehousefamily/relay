@@ -18,7 +18,7 @@ class Dispatcher
 
     /**
      * Flag to determine whether processing execution should happen synchronously
-     * 
+     *
      * @var bool
      */
     protected $isSync = false;
@@ -37,7 +37,7 @@ class Dispatcher
     /**
      * Provide a callback to execute, and execute that callback processing any operations
      * synchronously for the duration of its execution.
-     * 
+     *
      * @param \Closure $callback
      * @return self
      */

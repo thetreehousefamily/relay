@@ -157,7 +157,7 @@ class Relay implements RelayContract
 
     /**
      * Process relay operations synchronously for the duration of $callback execution
-     * 
+     *
      * @param \Closure $callback
      * @return self
      */
