@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Bus;
 use Orchestra\Testbench\TestCase as Orchestra;
 use TheTreehouse\Relay\Facades\Relay;
 use TheTreehouse\Relay\RelayServiceProvider;
+use TheTreehouse\Relay\Tests\Concerns\AssertsAgainstRelayEntityActionJob;
 use TheTreehouse\Relay\Tests\Concerns\ProvidesFakeProvider;
 use TheTreehouse\Relay\Tests\Contracts\UsingFakeRelay;
 use TheTreehouse\Relay\Tests\Fixtures\Models\Contact;
@@ -15,6 +16,7 @@ use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider;
 
 class TestCase extends Orchestra
 {
+    use AssertsAgainstRelayEntityActionJob;
     use ProvidesFakeProvider;
 
     public function setUp(): void
