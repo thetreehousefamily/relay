@@ -239,7 +239,7 @@ abstract class BaseDispatcherTest extends TestCase
     public function test_it_dispatches_update_on_manual_push()
     {
         $model = new $this->entityModelClass([
-            'fake_provider_id' => Str::random()
+            'fake_provider_id' => Str::random(),
         ]);
 
         $dispatcher = $this->newDispatcher();

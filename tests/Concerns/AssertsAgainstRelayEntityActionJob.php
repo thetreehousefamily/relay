@@ -10,7 +10,7 @@ trait AssertsAgainstRelayEntityActionJob
 {
     public function assertRelayEntityActionNotDispatched(string $provider = null)
     {
-        if (!$provider) {
+        if (! $provider) {
             Bus::assertNotDispatched(RelayEntityAction::class);
 
             return $this;

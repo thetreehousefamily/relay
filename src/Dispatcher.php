@@ -55,7 +55,7 @@ class Dispatcher
 
     /**
      * Process a manual upsert request from an entity
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Model $entity
      * @param \TheTreehouse\Relay\AbstractProvider|string|null $provider
      * @return static
@@ -73,7 +73,7 @@ class Dispatcher
                 : null
             );
 
-        if (!$type) {
+        if (! $type) {
             return $this;
         }
 
@@ -287,7 +287,7 @@ class Dispatcher
     /**
      * Resolve a provider instance or string, ensuring it is a valid, registered
      * Relay Provider
-     * 
+     *
      * @param \TheTreehouse\Relay\AbstractProvider|string $provider
      * @return \TheTreehouse\Relay\AbstractProvider
      */

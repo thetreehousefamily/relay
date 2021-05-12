@@ -57,7 +57,7 @@ abstract class BaseRelayableTest extends TestCase
     {
         $model = new $this->modelClass([
             'fake_provider_id' => 'random-id',
-            'manual_provider_id' => 'random-id'
+            'manual_provider_id' => 'random-id',
         ]);
 
         $model->relay();
