@@ -2,6 +2,7 @@
 
 namespace TheTreehouse\Relay;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use TheTreehouse\Relay\Jobs\RelayEntityAction;
 use TheTreehouse\Relay\Support\Contracts\RelayContract;
@@ -16,6 +17,13 @@ class Dispatcher
     protected RelayContract $relay;
 
     /**
+     * Flag to determine whether processing execution should happen synchronously
+     * 
+     * @var bool
+     */
+    protected $isSync = false;
+
+    /**
      * Instantiate the Dispatcher singleton
      *
      * @param \TheTreehouse\Relay\Support\Contracts\RelayContract $relay
@@ -24,6 +32,24 @@ class Dispatcher
     public function __construct(RelayContract $relay)
     {
         $this->relay = $relay;
+    }
+
+    /**
+     * Provide a callback to execute, and execute that callback processing any operations
+     * synchronously for the duration of its execution.
+     * 
+     * @param \Closure $callback
+     * @return self
+     */
+    public function sync(Closure $callback): Dispatcher
+    {
+        $this->isSync = true;
+
+        $callback();
+
+        $this->isSync = false;
+
+        return $this;
     }
 
     /**
@@ -197,7 +223,11 @@ class Dispatcher
      */
     protected function dispatch(Model $entity, string $entityType, string $action, AbstractProvider $provider): self
     {
-        RelayEntityAction::dispatch(
+        $method = $this->isSync
+            ? 'dispatchSync'
+            : 'dispatch';
+
+        RelayEntityAction::{$method}(
             $entity,
             $entityType,
             $action,
