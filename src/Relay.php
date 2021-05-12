@@ -159,13 +159,11 @@ class Relay implements RelayContract
      * Process relay operations synchronously for the duration of $callback execution
      *
      * @param \Closure $callback
-     * @return self
+     * @return mixed The return result of $callback
      */
-    public function sync(\Closure $callback): self
+    public function sync(\Closure $callback)
     {
-        app(Dispatcher::class)->sync($callback);
-
-        return $this;
+        return app(Dispatcher::class)->sync($callback);
     }
 
     /**

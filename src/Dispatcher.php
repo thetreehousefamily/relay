@@ -39,17 +39,17 @@ class Dispatcher
      * synchronously for the duration of its execution.
      *
      * @param \Closure $callback
-     * @return self
+     * @return mixed The return result of $callback
      */
-    public function sync(Closure $callback): Dispatcher
+    public function sync(Closure $callback)
     {
         $this->isSync = true;
 
-        $callback();
+        $result = $callback();
 
         $this->isSync = false;
 
-        return $this;
+        return $result;
     }
 
     /**

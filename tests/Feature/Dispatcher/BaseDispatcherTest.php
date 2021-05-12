@@ -169,13 +169,17 @@ abstract class BaseDispatcherTest extends TestCase
     {
         Bus::spy()->expects('dispatchSync');
 
-        Relay::sync(function () {
-            $model = new $this->entityModelClass;
-    
+        $model = new $this->entityModelClass;
+
+        $result = Relay::sync(function () use ($model) {
             $dispatcher = $this->newDispatcher();
     
             $dispatcher->{"relayCreated{$this->entityName}"}($model);
+
+            return $model;
         });
+
+        $this->assertSame($model, $result);
     }
 
     private function newDispatcher(): Dispatcher

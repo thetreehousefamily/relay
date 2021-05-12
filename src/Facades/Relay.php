@@ -17,7 +17,7 @@ use TheTreehouse\Relay\Support\FakeRelay;
  * @method static string|null organizationModel() Return the configured organization model class name, or null if it does not exist or is not supported by the application
  * @method static bool supportsContacts() Return a boolean value, indicating whether the application supports the contacts concept, depending on its configuration.
  * @method static bool supportsOrganizations() Return a boolean value, indicating whether the application supports the organizations concept, depending on its configuration.
- * @method static \TheTreehouse\Relay\Relay sync(\Closure $callback) Process relay operations synchronously for the duration of $callback execution
+ * @method static mixed sync(\Closure $callback) Process relay operations synchronously for the duration of $callback execution
  */
 class Relay extends Facade
 {
