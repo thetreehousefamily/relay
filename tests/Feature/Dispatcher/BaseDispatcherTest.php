@@ -2,12 +2,10 @@
 
 namespace TheTreehouse\Relay\Tests\Feature\Dispatcher;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Str;
 use TheTreehouse\Relay\Dispatcher;
 use TheTreehouse\Relay\Facades\Relay;
-use TheTreehouse\Relay\Jobs\RelayEntityAction;
 use TheTreehouse\Relay\Tests\Fixtures\Providers\FakeProvider;
 use TheTreehouse\Relay\Tests\TestCase;
 
@@ -81,7 +79,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayCreated{$this->entityName}"}($model);
 
-        $this->assertRelayEntityActionDispatched($model, 'create');
+        $this->assertRelayEntityActionDispatched($model, $this->entityName, 'create', FakeProvider::class);
     }
 
     public function test_it_does_not_relay_updated_if_entity_not_supported_by_application()
@@ -125,7 +123,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayUpdated{$this->entityName}"}($model);
 
-        $this->assertRelayEntityActionDispatched($model, 'create');
+        $this->assertRelayEntityActionDispatched($model, $this->entityName, 'create', FakeProvider::class);
     }
 
     public function test_it_dispatches_update_job_from_provider()
@@ -138,7 +136,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayUpdated{$this->entityName}"}($model);
 
-        $this->assertRelayEntityActionDispatched($model, 'update');
+        $this->assertRelayEntityActionDispatched($model, $this->entityName, 'update', FakeProvider::class);
     }
 
     public function test_it_does_not_relay_deleted_if_entity_not_supported_by_application()
@@ -207,7 +205,7 @@ abstract class BaseDispatcherTest extends TestCase
 
         $dispatcher->{"relayDeleted{$this->entityName}"}($model);
 
-        $this->assertRelayEntityActionDispatched($model, 'delete');
+        $this->assertRelayEntityActionDispatched($model, $this->entityName, 'delete', FakeProvider::class);
     }
 
     public function test_it_dispatches_synchronously()
@@ -227,31 +225,32 @@ abstract class BaseDispatcherTest extends TestCase
         $this->assertSame($model, $result);
     }
 
+    public function test_it_dispatches_create_on_manual_push()
+    {
+        $model = new $this->entityModelClass;
+
+        $dispatcher = $this->newDispatcher();
+
+        $dispatcher->processManualRelay($model);
+
+        $this->assertRelayEntityActionDispatched($model, $this->entityName, 'create', FakeProvider::class);
+    }
+
+    public function test_it_dispatches_update_on_manual_push()
+    {
+        $model = new $this->entityModelClass([
+            'fake_provider_id' => Str::random()
+        ]);
+
+        $dispatcher = $this->newDispatcher();
+
+        $dispatcher->processManualRelay($model);
+
+        $this->assertRelayEntityActionDispatched($model, $this->entityName, 'update', FakeProvider::class);
+    }
+
     private function newDispatcher(): Dispatcher
     {
         return $this->app->make(Dispatcher::class);
-    }
-
-    private function assertRelayEntityActionNotDispatched()
-    {
-        Bus::assertNotDispatched(RelayEntityAction::class);
-    }
-
-    private function assertRelayEntityActionDispatched(Model $entity, string $action)
-    {
-        Bus::assertDispatched(RelayEntityAction::class, function (RelayEntityAction $job) use ($entity, $action) {
-            if (
-                $job->entity !== $entity
-                || $job->entityType !== strtolower($this->entityName)
-                || $job->action !== $action
-                || $job->provider !== FakeProvider::class
-            ) {
-                $this->fail('Relay Entity Action job was misconfigured');
-
-                return false;
-            }
-
-            return true;
-        });
     }
 }

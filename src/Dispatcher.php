@@ -4,6 +4,7 @@ namespace TheTreehouse\Relay;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
+use TheTreehouse\Relay\Exceptions\InvalidProviderException;
 use TheTreehouse\Relay\Jobs\RelayEntityAction;
 use TheTreehouse\Relay\Support\Contracts\RelayContract;
 
@@ -53,6 +54,33 @@ class Dispatcher
     }
 
     /**
+     * Process a manual upsert request from an entity
+     * 
+     * @param \Illuminate\Database\Eloquent\Model $entity
+     * @param \TheTreehouse\Relay\AbstractProvider|string|null $provider
+     * @return static
+     */
+    public function processManualRelay(Model $entity, $provider = null): Dispatcher
+    {
+        $class = get_class($entity);
+
+        $type =
+            $class === config('relay.contact')
+            ? 'Contact'
+            : (
+                $class === config('relay.organization')
+                ? 'Organization'
+                : null
+            );
+
+        if (!$type) {
+            return $this;
+        }
+
+        return $this->{"relayUpdated{$type}"}($entity, $provider);
+    }
+
+    /**
      * Process the relay for a created contact
      *
      * @param \Illuminate\Database\Eloquent\Model $contact
@@ -67,11 +95,12 @@ class Dispatcher
      * Process the relay for an updated contact
      *
      * @param \Illuminate\Database\Eloquent\Model $contact
+     * @param \TheTreehouse\Relay\AbstractProvider|string|null $provider
      * @return static
      */
-    public function relayUpdatedContact(Model $contact): Dispatcher
+    public function relayUpdatedContact(Model $contact, $provider = null): Dispatcher
     {
-        return $this->processUpdated($contact, RelayEntityAction::ENTITY_CONTACT);
+        return $this->processUpdated($contact, RelayEntityAction::ENTITY_CONTACT, $provider);
     }
 
     /**
@@ -100,11 +129,12 @@ class Dispatcher
      * Process the relay for an updated organization
      *
      * @param \Illuminate\Database\Eloquent\Model $organization
+     * @param \TheTreehouse\Relay\AbstractProvider|string|null $provider
      * @return static
      */
-    public function relayUpdatedOrganization(Model $organization): Dispatcher
+    public function relayUpdatedOrganization(Model $organization, $provider = null): Dispatcher
     {
-        return $this->processUpdated($organization, RelayEntityAction::ENTITY_ORGANIZATION);
+        return $this->processUpdated($organization, RelayEntityAction::ENTITY_ORGANIZATION, $provider);
     }
 
     /**
@@ -156,15 +186,20 @@ class Dispatcher
      *
      * @param \Illuminate\Database\Eloquent\Model $entity
      * @param string $entityType
+     * @param \TheTreehouse\Relay\AbstractProvider|string|null $provider
      * @return self
      */
-    protected function processUpdated(Model $entity, string $entityType): Dispatcher
+    protected function processUpdated(Model $entity, string $entityType, $provider = null): Dispatcher
     {
         if (! $this->relay->{"supports".ucfirst($entityType)."s"}()) {
             return $this;
         }
 
-        foreach ($this->relay->getProviders() as $provider) {
+        $providers = $provider
+            ? [$this->resolveProvider($provider)]
+            : $this->relay->getProviders();
+
+        foreach ($providers as $provider) {
             if (! $provider->{"supports".ucfirst($entityType)."s"}()) {
                 continue;
             }
@@ -247,5 +282,27 @@ class Dispatcher
         );
 
         return $this;
+    }
+
+    /**
+     * Resolve a provider instance or string, ensuring it is a valid, registered
+     * Relay Provider
+     * 
+     * @param \TheTreehouse\Relay\AbstractProvider|string $provider
+     * @return \TheTreehouse\Relay\AbstractProvider
+     */
+    protected function resolveProvider($provider): AbstractProvider
+    {
+        $providerClass = is_string($provider)
+            ? $provider
+            : get_class($provider);
+
+        foreach ($this->relay->getProviders() as $registeredProvider) {
+            if (get_class($registeredProvider) === $providerClass) {
+                return $registeredProvider;
+            }
+        }
+
+        throw InvalidProviderException::midApplication($providerClass);
     }
 }
