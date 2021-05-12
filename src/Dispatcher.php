@@ -136,6 +136,10 @@ class Dispatcher
                 continue;
             }
 
+            if (! config("{$provider->configKey()}.auto", true)) {
+                continue;
+            }
+
             $this->dispatch(
                 $entity,
                 $entityType,
@@ -162,6 +166,10 @@ class Dispatcher
 
         foreach ($this->relay->getProviders() as $provider) {
             if (! $provider->{"supports".ucfirst($entityType)."s"}()) {
+                continue;
+            }
+
+            if (! config("{$provider->configKey()}.auto", true)) {
                 continue;
             }
 
@@ -198,6 +206,10 @@ class Dispatcher
                 ! $provider->{"supports".ucfirst($entityType)."s"}()
                 || ! $provider->{"{$entityType}Exists"}($entity)
             ) {
+                continue;
+            }
+
+            if (! config("{$provider->configKey()}.auto", true)) {
                 continue;
             }
 

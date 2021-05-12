@@ -49,6 +49,17 @@ abstract class BaseDispatcherTest extends TestCase
         $this->assertRelayEntityActionNotDispatched();
     }
 
+    public function test_it_does_not_relay_created_if_automatic_relay_disabled_for_provider()
+    {
+        config()->set('relay.providers.fake_provider.auto', false);
+
+        $dispatcher = $this->newDispatcher();
+
+        $dispatcher->{"relayCreated{$this->entityName}"}(new $this->entityModelClass);
+
+        $this->assertRelayEntityActionNotDispatched();
+    }
+
     public function test_it_does_not_relay_created_if_entity_already_exists()
     {
         $model = new $this->entityModelClass([
@@ -95,6 +106,17 @@ abstract class BaseDispatcherTest extends TestCase
         $this->assertRelayEntityActionNotDispatched();
     }
 
+    public function test_it_does_not_relay_updated_if_automatic_relay_disabled_for_provider()
+    {
+        config()->set('relay.providers.fake_provider.auto', false);
+
+        $dispatcher = $this->newDispatcher();
+
+        $dispatcher->{"relayUpdated{$this->entityName}"}(new $this->entityModelClass);
+
+        $this->assertRelayEntityActionNotDispatched();
+    }
+
     public function test_it_dispatches_create_job_on_relay_update_if_entity_does_not_yet_exist()
     {
         $model = new $this->entityModelClass;
@@ -123,9 +145,13 @@ abstract class BaseDispatcherTest extends TestCase
     {
         Relay::fake()->{"setSupports{$this->entityName}s"}(false);
 
+        $model = new $this->entityModelClass([
+            'fake_provider_id' => Str::random(),
+        ]);
+
         $dispatcher = $this->newDispatcher();
 
-        $dispatcher->{"relayDeleted{$this->entityName}"}(new $this->entityModelClass);
+        $dispatcher->{"relayDeleted{$this->entityName}"}($model);
 
         $this->assertRelayEntityActionNotDispatched();
     }
@@ -134,9 +160,28 @@ abstract class BaseDispatcherTest extends TestCase
     {
         $this->fakeProvider()->{"setSupports{$this->entityName}s"}(false);
 
+        $model = new $this->entityModelClass([
+            'fake_provider_id' => Str::random(),
+        ]);
+
         $dispatcher = $this->newDispatcher();
 
-        $dispatcher->{"relayDeleted{$this->entityName}"}(new $this->entityModelClass);
+        $dispatcher->{"relayDeleted{$this->entityName}"}($model);
+
+        $this->assertRelayEntityActionNotDispatched();
+    }
+
+    public function test_it_does_not_relay_deleted_if_automatic_relay_disabled_for_provider()
+    {
+        config()->set('relay.providers.fake_provider.auto', false);
+
+        $model = new $this->entityModelClass([
+            'fake_provider_id' => Str::random(),
+        ]);
+
+        $dispatcher = $this->newDispatcher();
+
+        $dispatcher->{"relayDeleted{$this->entityName}"}($model);
 
         $this->assertRelayEntityActionNotDispatched();
     }
