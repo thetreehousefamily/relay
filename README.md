@@ -15,6 +15,12 @@ Painlessly sync your contacts and organizations between your Laravel application
 
 <hr>
 
+### Relay is Alpha! 
+
+Relay is undergoing its initial, 'alpha' development phase. The core design of Relay, and its public API, is subject to change at any notice. This notice will remain until Relay hits its first stable version, v1.0.0.
+
+<hr>
+
 Relay helps you to bootstrap your internal integrations by painlessly, **bidirectionally**, syncing the contacts and organizational accounts between your Laravel application and the rest of your operational suite.
 
 > Note: This is the core Relay repository. If you're looking to install a particular driver, checkout the [Drivers](#) section.

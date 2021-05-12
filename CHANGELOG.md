@@ -2,6 +2,6 @@
 
 All notable changes will be documented in this file.
 
-## 1.0.0 - 202X-XX-XX
+## 0.0.0 -> 0.x.x
 
-- initial release
+- Change log notes are not recorded during the alpha period.
