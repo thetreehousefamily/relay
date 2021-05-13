@@ -3,6 +3,7 @@
 namespace TheTreehouse\Relay\Support;
 
 use TheTreehouse\Relay\Relay;
+use TheTreehouse\Relay\Support\Contracts\MutatorContract;
 use TheTreehouse\Relay\Support\Contracts\RelayContract;
 
 class FakeRelay implements RelayContract
@@ -56,6 +57,18 @@ class FakeRelay implements RelayContract
     public function getProviders(): array
     {
         return $this->relay->getProviders();
+    }
+
+    /** @inheritdoc */
+    public function registerMutator(string $mutator, ?string $alias = null): RelayContract
+    {
+        return $this->relay->registerMutator($mutator, $alias);
+    }
+
+    /** @inheritdoc */
+    public function getMutator($mutator): ?MutatorContract
+    {
+        return $this->relay->getMutator($mutator);
     }
 
     /** @inheritdoc */
