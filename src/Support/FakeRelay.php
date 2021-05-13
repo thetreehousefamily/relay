@@ -66,9 +66,9 @@ class FakeRelay implements RelayContract
     }
 
     /** @inheritdoc */
-    public function getMutator($mutator): ?MutatorContract
+    public function resolveMutatorClass($mutator): ?string
     {
-        return $this->relay->getMutator($mutator);
+        return $this->relay->resolveMutatorClass($mutator);   
     }
 
     /** @inheritdoc */

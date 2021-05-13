@@ -180,6 +180,27 @@ class PropertyMapperTest extends TestCase
 
         $this->assertEquals('bar', $model->mutable_property);
     }
+
+    public function test_it_instantiates_mutators_with_options()
+    {
+        config([
+            'relay.providers.fake_provider.organization_fields' => [
+                'mutable_property' => 'mutable_property::example_configurable_mutator,Config Value',
+            ],
+        ]);
+
+        Relay::registerMutator(ExampleConfigurableMutator::class, 'example_configurable_mutator');
+
+        $model = new ExampleMutatorModel([
+            'mutable_property' => 'foo',
+        ]);
+
+        $provider = $this->fakeProvider();
+
+        $outbound = (new PropertyMapper($model, PropertyMapper::ENTITY_ORGANIZATION, $provider))->mapOutbound();
+
+        $this->assertEquals('Config Value', $outbound['mutable_property']);
+    }
 }
 
 class ExamplePropertyModel extends Model
@@ -244,5 +265,25 @@ class ExampleMutator implements MutatorContract
     public function inbound($value)
     {
         return substr($value, 1);
+    }
+}
+
+class ExampleConfigurableMutator implements MutatorContract
+{
+    private $configValue;
+
+    public function __construct($configValue)
+    {
+        $this->configValue = $configValue;
+    }
+
+    public function outbound($value)
+    {
+        return $this->configValue;
+    }
+
+    public function inbound($value)
+    {
+        return $this->configValue;
     }
 }

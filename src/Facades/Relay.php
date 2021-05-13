@@ -12,7 +12,7 @@ use TheTreehouse\Relay\Support\FakeRelay;
  * @method static \TheTreehouse\Relay\Relay registerProvider(string $class) Register a provider by its class name
  * @method static string[] getRegisteredProviders() Return the registered providers
  * @method static \TheTreehouse\Relay\Relay registerMutator(string $mutator, string $alias = null) Register a mutator class, optionally providing an alias
- * @method static \TheTreehouse\Relay\Support\Contracts\MutatorContract|null getMutator($mutator) Get a registered mutator by its class name or alias
+ * @method static string|null resolveMutatorClass($mutator) Resolve an alias, Object or class to a valid Mutator class.
  * @method static \TheTreehouse\Relay\Relay useContactModel(string $class) Use the given contact model
  * @method static \TheTreehouse\Relay\Relay useOrganizationModel(string $class) Use the given organization model
  * @method static string|null contactModel() Return the configured contact model class name, or null if it does not exist or is not supported by the application

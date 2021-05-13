@@ -36,14 +36,13 @@ interface RelayContract
     public function registerMutator(string $mutator, string $alias = null): self;
 
     /**
-     * Get a registered mutator instance by its class name, or by passing its instance. If the
-     * mutator is not registered, null will be returned. If $mutator is a valid instance, the
-     * original instance will be returned.
+     * Resolve an alias, Object or class to a valid Mutator class. If the provided $mutator value
+     * is not valid for any reason, null is returned.
      *
      * @param mixed $mutator
-     * @return \TheTreehouse\Relay\Support\Contracts\MutatorContract|null
+     * @return string|null
      */
-    public function getMutator($mutator):? MutatorContract;
+    public function resolveMutatorClass($mutator):? string;
 
     /**
      * Use the given contact model

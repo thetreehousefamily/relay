@@ -4,6 +4,7 @@ namespace TheTreehouse\Relay;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use ReflectionClass;
 use TheTreehouse\Relay\Exceptions\PropertyException;
 use TheTreehouse\Relay\Facades\Relay;
 
@@ -200,12 +201,53 @@ class PropertyMapper
             throw PropertyException::badMappingLocalKey($this->provider, $key);
         }
 
-        $mutator = $mutatorReference ? Relay::getMutator($mutatorReference) : null;
+        if (!$mutatorReference) {
+            return [$key, null];
+        }
 
-        if ($mutatorReference && ! $mutator) {
+        $mutator = null;
+        $args = [];
+
+        if (is_string($mutatorReference)) {
+            $args = explode(',', $mutatorReference);
+            $mutatorReference = array_shift($args);
+        }
+
+        if (! $mutator = Relay::resolveMutatorClass($mutatorReference)) {
             throw PropertyException::badMutator($this->provider, $mutatorReference);
         }
 
-        return [$key, $mutator];
+        $resolvedMutator = app($mutator, $this->keyConstructionParameters($mutator, $args));
+
+        return [$key, $resolvedMutator];
+    }
+
+    /**
+     * Given a class string and array of numerically indexed parameters, key those
+     * parameters by parameter name, based off the construction method of the class.
+     * 
+     * @param string $class
+     * @param array $parameters
+     * @return array
+     */
+    private function keyConstructionParameters(string $class, array $parameters): array
+    {
+        if (!$parameters || !method_exists($class, '__construct')) {
+            return $parameters;
+        }
+
+        $constructionParameters = (new ReflectionClass($class))
+            ->getMethod('__construct')
+            ->getParameters();
+
+        $keyed = [];
+
+        for ($i = 0; $i < count($constructionParameters); $i++) {
+            $constructionParameter = $constructionParameters[$i];
+
+            $keyed[$constructionParameter->getName()] = $parameters[$i];
+        }
+
+        return $keyed;
     }
 }

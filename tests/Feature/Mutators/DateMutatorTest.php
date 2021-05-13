@@ -12,7 +12,7 @@ class DateMutatorTest extends TestCase
 {
     public function test_it_is_auto_registered()
     {
-        $this->assertInstanceOf(DateMutator::class, Relay::getMutator('date'));
+        $this->assertEquals(DateMutator::class, Relay::resolveMutatorClass('date'));
     }
 
     public function test_it_passes_input_to_output_when_cannot_mutate_outbound()

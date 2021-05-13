@@ -41,25 +41,13 @@ class RelayTest extends TestCase
     {
         Relay::registerMutator(ExampleValidMutator::class, 'example_mutator');
 
-        $this->assertInstanceOf(ExampleValidMutator::class, Relay::getMutator(ExampleValidMutator::class));
-        $this->assertInstanceOf(ExampleValidMutator::class, Relay::getMutator('example_mutator'));
+        $this->assertEquals(ExampleValidMutator::class, Relay::resolveMutatorClass(ExampleValidMutator::class));
+        $this->assertEquals(ExampleValidMutator::class, Relay::resolveMutatorClass('example_mutator'));
     }
 
     public function test_it_returns_null_for_invalid_mutator()
     {
-        $this->assertNull(Relay::getMutator(12345));
-    }
-
-    public function test_it_returns_same_mutator()
-    {
-        Relay::registerMutator(ExampleValidMutator::class);
-
-        $instance = new ExampleValidMutator;
-
-        $this->assertSame(
-            $instance,
-            Relay::getMutator($instance)
-        );
+        $this->assertNull(Relay::resolveMutatorClass(12345));
     }
 }
 
