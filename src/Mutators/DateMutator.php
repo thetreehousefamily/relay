@@ -8,9 +8,9 @@ class DateMutator extends AbstractDateMutator
 {
     /**
      * Instantiate a new date mutator
-     * 
-     * @param string $format 
-     * @return void 
+     *
+     * @param string $format
+     * @return void
      */
     public function __construct(string $format = 'Y-m-d')
     {

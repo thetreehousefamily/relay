@@ -11,16 +11,16 @@ abstract class AbstractDateMutator implements MutatorContract
 {
     /**
      * The format to mutate to/from
-     * 
+     *
      * @var string
      */
     protected $format;
 
     /**
      * Attempt to convert the Carbon $value to the desired format
-     * 
-     * @param mixed $value 
-     * @return mixed 
+     *
+     * @param mixed $value
+     * @return mixed
      */
     public function outbound($value)
     {
@@ -33,9 +33,9 @@ abstract class AbstractDateMutator implements MutatorContract
 
     /**
      * Attempt to parse a formatted date string into a Carbon instance
-     * 
-     * @param mixed $value 
-     * @return mixed 
+     *
+     * @param mixed $value
+     * @return mixed
      */
     public function inbound($value)
     {
