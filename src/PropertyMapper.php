@@ -4,6 +4,8 @@ namespace TheTreehouse\Relay;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use TheTreehouse\Relay\Exceptions\PropertyException;
+use TheTreehouse\Relay\Facades\Relay;
 
 class PropertyMapper
 {
@@ -56,14 +58,20 @@ class PropertyMapper
     {
         $properties = [];
 
-        foreach ($this->getMap() as $modelKey => $providerKey) {
-            if ($accessorMethod = $this->generateModelMethodName('get', $modelKey)) {
-                $properties[$providerKey] = $this->entity->{$accessorMethod}($this->entity->{$modelKey});
+        foreach ($this->getMap() as $modelKey => $providerKeyMutator) {
+            [$providerKey, $mutator] = $this->processProviderKeyMutator($providerKeyMutator);
 
-                continue;
+            $value = $this->entity->{$modelKey};
+
+            if ($mutator) {
+                $value = $mutator->outbound($value);
             }
 
-            $properties[$providerKey] = $this->entity->{$modelKey};
+            if ($accessorMethod = $this->generateModelMethodName('get', $modelKey)) {
+                $value = $this->entity->{$accessorMethod}($value);
+            }
+
+            $properties[$providerKey] = $value;
         }
 
         return $properties;
@@ -163,5 +171,33 @@ class PropertyMapper
         }
 
         return null;
+    }
+
+    /**
+     * Given a provider key and optional mutator pair, split into the string key and the
+     * mutator instance, if provided
+     * 
+     * @return array
+     */
+    private function processProviderKeyMutator($providerKeyMutator): array
+    {
+        if (!is_array($providerKeyMutator)) {
+            $providerKeyMutator = explode('::', $providerKeyMutator);
+        }
+        
+        $key = $providerKeyMutator[0] ?? null;
+        $mutatorReference = $providerKeyMutator[1] ?? null;
+
+        if (!$key) {
+            throw PropertyException::badMappingLocalKey($this->provider, $key);
+        }
+
+        $mutator = $mutatorReference ? Relay::getMutator($mutatorReference) : null;
+
+        if ($mutatorReference && !$mutator) {
+            throw PropertyException::badMutator($this->provider, $mutatorReference);
+        }
+
+        return [$key, $mutator];
     }
 }

@@ -5,6 +5,8 @@ namespace TheTreehouse\Relay;
 use Illuminate\Database\Eloquent\Model;
 use TheTreehouse\Relay\Exceptions\InvalidModelException;
 use TheTreehouse\Relay\Exceptions\InvalidProviderException;
+use TheTreehouse\Relay\Exceptions\PropertyException;
+use TheTreehouse\Relay\Support\Contracts\MutatorContract;
 use TheTreehouse\Relay\Support\Contracts\RelayContract;
 
 class Relay implements RelayContract
@@ -15,6 +17,20 @@ class Relay implements RelayContract
      * @var string[]
      */
     protected array $providers = [];
+
+    /**
+     * The array of registered mutators (by class name)
+     * 
+     * @var string[]
+     */
+    protected $mutators = [];
+
+    /**
+     * The array of mutator aliases
+     * 
+     * @var string[]
+     */
+    protected $mutatorAliases = [];
 
     /**
      * The contact model class
@@ -75,6 +91,58 @@ class Relay implements RelayContract
         }
 
         return $arr;
+    }
+
+    /**
+     * Register a mutator class, optionally providing an alias
+     * 
+     * @param string $mutator
+     * @param string|null $alias
+     * @return self
+     */
+    public function registerMutator(string $mutator, string $alias = null): self
+    {
+        if (!class_exists($mutator) || ! in_array(MutatorContract::class, class_implements($mutator))) {
+            throw PropertyException::invalidMutator($mutator);
+        }
+
+        $this->mutators[] = $mutator;
+
+        if ($alias) {
+            $this->mutatorAliases[$alias] = $mutator;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get a registered mutator instance by its class name, or by passing its instance. If the
+     * mutator is not registered, null will be returned. If $mutator is a valid instance, the
+     * original instance will be returned.
+     * 
+     * @param mixed $mutator
+     * @return \TheTreehouse\Relay\Support\Contracts\MutatorContract|null
+     */
+    public function getMutator($mutator):? MutatorContract
+    {
+        $originalInstance = null;
+        $mutator = is_string($mutator)
+            ? $mutator
+            : (
+                is_object($mutator)
+                ? get_class($originalInstance = $mutator)
+                : null
+            );
+
+        if ($mutator && key_exists($mutator, $this->mutatorAliases)) {
+            $mutator = $this->mutatorAliases[$mutator];
+        }
+
+        if (!$mutator || !in_array($mutator, $this->mutators)) {
+            return null;
+        }
+
+        return $originalInstance ?? app($mutator);
     }
 
     /**
