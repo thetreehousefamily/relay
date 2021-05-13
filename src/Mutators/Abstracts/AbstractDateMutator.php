@@ -4,7 +4,7 @@ namespace TheTreehouse\Relay\Mutators\Abstracts;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
-use Carbon\Exceptions\InvalidFormatException;
+use InvalidArgumentException;
 use TheTreehouse\Relay\Support\Contracts\MutatorContract;
 
 abstract class AbstractDateMutator implements MutatorContract
@@ -41,7 +41,7 @@ abstract class AbstractDateMutator implements MutatorContract
     {
         try {
             $carbon = Carbon::createFromFormat($this->format, $value);
-        } catch (InvalidFormatException $exception) {
+        } catch (InvalidArgumentException $exception) {
             return $value;
         }
 
