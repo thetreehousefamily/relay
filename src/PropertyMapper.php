@@ -205,7 +205,6 @@ class PropertyMapper
             return [$key, null];
         }
 
-        $mutator = null;
         $args = [];
 
         if (is_string($mutatorReference)) {
