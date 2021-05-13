@@ -184,25 +184,25 @@ class PropertyMapper
     /**
      * Given a provider key and optional mutator pair, split into the string key and the
      * mutator instance, if provided
-     * 
+     *
      * @return array
      */
     private function processProviderKeyMutator($providerKeyMutator): array
     {
-        if (!is_array($providerKeyMutator)) {
+        if (! is_array($providerKeyMutator)) {
             $providerKeyMutator = explode('::', $providerKeyMutator);
         }
         
         $key = $providerKeyMutator[0] ?? null;
         $mutatorReference = $providerKeyMutator[1] ?? null;
 
-        if (!$key) {
+        if (! $key) {
             throw PropertyException::badMappingLocalKey($this->provider, $key);
         }
 
         $mutator = $mutatorReference ? Relay::getMutator($mutatorReference) : null;
 
-        if ($mutatorReference && !$mutator) {
+        if ($mutatorReference && ! $mutator) {
             throw PropertyException::badMutator($this->provider, $mutatorReference);
         }
 

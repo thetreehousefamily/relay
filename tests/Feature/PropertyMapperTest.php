@@ -106,7 +106,7 @@ class PropertyMapperTest extends TestCase
         ]);
 
         $model = new ExampleMutatorModel([
-            'mutable_property' => 'foo'
+            'mutable_property' => 'foo',
         ]);
 
         $this->expectException(PropertyException::class);
@@ -125,7 +125,7 @@ class PropertyMapperTest extends TestCase
         ]);
 
         $model = new ExampleMutatorModel([
-            'mutable_property' => 'foo'
+            'mutable_property' => 'foo',
         ]);
 
         $this->expectException(PropertyException::class);
@@ -146,7 +146,7 @@ class PropertyMapperTest extends TestCase
         Relay::registerMutator(ExampleMutator::class, 'example_mutator');
 
         $model = new ExampleMutatorModel([
-            'mutable_property' => 'foo'
+            'mutable_property' => 'foo',
         ]);
 
         $provider = $this->fakeProvider();
@@ -168,14 +168,14 @@ class PropertyMapperTest extends TestCase
         Relay::registerMutator(ExampleMutator::class, 'example_mutator');
 
         $model = new ExampleMutatorModel([
-            'mutable_property' => null
+            'mutable_property' => null,
         ]);
 
         $provider = $this->fakeProvider();
 
         (new PropertyMapper($model, PropertyMapper::ENTITY_ORGANIZATION, $provider))
             ->setInbound([
-                'inbound_mutable_property' => '_bar'
+                'inbound_mutable_property' => '_bar',
             ]);
 
         $this->assertEquals('bar', $model->mutable_property);

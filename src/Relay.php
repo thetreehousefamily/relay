@@ -20,14 +20,14 @@ class Relay implements RelayContract
 
     /**
      * The array of registered mutators (by class name)
-     * 
+     *
      * @var string[]
      */
     protected $mutators = [];
 
     /**
      * The array of mutator aliases
-     * 
+     *
      * @var string[]
      */
     protected $mutatorAliases = [];
@@ -95,14 +95,14 @@ class Relay implements RelayContract
 
     /**
      * Register a mutator class, optionally providing an alias
-     * 
+     *
      * @param string $mutator
      * @param string|null $alias
      * @return self
      */
     public function registerMutator(string $mutator, string $alias = null): self
     {
-        if (!class_exists($mutator) || ! in_array(MutatorContract::class, class_implements($mutator))) {
+        if (! class_exists($mutator) || ! in_array(MutatorContract::class, class_implements($mutator))) {
             throw PropertyException::invalidMutator($mutator);
         }
 
@@ -119,7 +119,7 @@ class Relay implements RelayContract
      * Get a registered mutator instance by its class name, or by passing its instance. If the
      * mutator is not registered, null will be returned. If $mutator is a valid instance, the
      * original instance will be returned.
-     * 
+     *
      * @param mixed $mutator
      * @return \TheTreehouse\Relay\Support\Contracts\MutatorContract|null
      */
@@ -138,7 +138,7 @@ class Relay implements RelayContract
             $mutator = $this->mutatorAliases[$mutator];
         }
 
-        if (!$mutator || !in_array($mutator, $this->mutators)) {
+        if (! $mutator || ! in_array($mutator, $this->mutators)) {
             return null;
         }
 
