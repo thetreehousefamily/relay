@@ -3,7 +3,6 @@
 namespace TheTreehouse\Relay\Support;
 
 use TheTreehouse\Relay\Relay;
-use TheTreehouse\Relay\Support\Contracts\MutatorContract;
 use TheTreehouse\Relay\Support\Contracts\RelayContract;
 
 class FakeRelay implements RelayContract
@@ -68,7 +67,7 @@ class FakeRelay implements RelayContract
     /** @inheritdoc */
     public function resolveMutatorClass($mutator): ?string
     {
-        return $this->relay->resolveMutatorClass($mutator);   
+        return $this->relay->resolveMutatorClass($mutator);
     }
 
     /** @inheritdoc */

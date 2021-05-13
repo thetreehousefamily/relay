@@ -201,7 +201,7 @@ class PropertyMapper
             throw PropertyException::badMappingLocalKey($this->provider, $key);
         }
 
-        if (!$mutatorReference) {
+        if (! $mutatorReference) {
             return [$key, null];
         }
 
@@ -225,14 +225,14 @@ class PropertyMapper
     /**
      * Given a class string and array of numerically indexed parameters, key those
      * parameters by parameter name, based off the construction method of the class.
-     * 
+     *
      * @param string $class
      * @param array $parameters
      * @return array
      */
     private function keyConstructionParameters(string $class, array $parameters): array
     {
-        if (!$parameters || !method_exists($class, '__construct')) {
+        if (! $parameters || ! method_exists($class, '__construct')) {
             return $parameters;
         }
 
