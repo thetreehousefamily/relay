@@ -69,4 +69,9 @@ class ExampleValidMutator implements MutatorContract
     {
         return $value;
     }
+
+    public function inbound($value)
+    {
+        return $value;
+    }
 }

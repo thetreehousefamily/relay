@@ -87,12 +87,20 @@ class PropertyMapper
     {
         $properties = [];
 
-        foreach ($this->getMap() as $modelKey => $providerKey) {
+        foreach ($this->getMap() as $modelKey => $providerKeyMutator) {
+            [$providerKey, $mutator] = $this->processProviderKeyMutator($providerKeyMutator);
+
             if (! isset($inboundProperties[$providerKey])) {
                 continue;
             }
 
-            $properties[$modelKey] = $inboundProperties[$providerKey];
+            $value = $inboundProperties[$providerKey];
+
+            if ($mutator) {
+                $value = $mutator->inbound($value);
+            }
+
+            $properties[$modelKey] = $value;
         }
 
         return $properties;
