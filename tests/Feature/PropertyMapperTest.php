@@ -3,7 +3,10 @@
 namespace TheTreehouse\Relay\Tests\Feature;
 
 use Illuminate\Database\Eloquent\Model;
+use TheTreehouse\Relay\Exceptions\PropertyException;
+use TheTreehouse\Relay\Facades\Relay;
 use TheTreehouse\Relay\PropertyMapper;
+use TheTreehouse\Relay\Support\Contracts\MutatorContract;
 use TheTreehouse\Relay\Tests\TestCase;
 
 class PropertyMapperTest extends TestCase
@@ -93,6 +96,111 @@ class PropertyMapperTest extends TestCase
             $model->getAttributes()
         );
     }
+
+    public function test_it_throws_exception_on_bad_mapping()
+    {
+        config([
+            'relay.providers.fake_provider.organization_fields' => [
+                'mutable_property' => null,
+            ],
+        ]);
+
+        $model = new ExampleMutatorModel([
+            'mutable_property' => 'foo',
+        ]);
+
+        $this->expectException(PropertyException::class);
+
+        $provider = $this->fakeProvider();
+
+        (new PropertyMapper($model, PropertyMapper::ENTITY_ORGANIZATION, $provider))->mapOutbound();
+    }
+
+    public function test_it_throws_exception_on_bad_mutator()
+    {
+        config([
+            'relay.providers.fake_provider.organization_fields' => [
+                'mutable_property' => 'property::bad_mutator',
+            ],
+        ]);
+
+        $model = new ExampleMutatorModel([
+            'mutable_property' => 'foo',
+        ]);
+
+        $this->expectException(PropertyException::class);
+
+        $provider = $this->fakeProvider();
+
+        (new PropertyMapper($model, PropertyMapper::ENTITY_ORGANIZATION, $provider))->mapOutbound();
+    }
+
+    public function test_it_mutates_outbound_properties()
+    {
+        config([
+            'relay.providers.fake_provider.organization_fields' => [
+                'mutable_property' => 'outbound_mutable_property::example_mutator',
+            ],
+        ]);
+
+        Relay::registerMutator(ExampleMutator::class, 'example_mutator');
+
+        $model = new ExampleMutatorModel([
+            'mutable_property' => 'foo',
+        ]);
+
+        $provider = $this->fakeProvider();
+
+        $outbound = (new PropertyMapper($model, PropertyMapper::ENTITY_ORGANIZATION, $provider))->mapOutbound();
+
+        $this->assertTrue(isset($outbound['outbound_mutable_property']));
+        $this->assertEquals('_foo', $outbound['outbound_mutable_property']);
+    }
+
+    public function test_it_mutates_inbound_properties()
+    {
+        config([
+            'relay.providers.fake_provider.organization_fields' => [
+                'mutable_property' => 'inbound_mutable_property::example_mutator',
+            ],
+        ]);
+
+        Relay::registerMutator(ExampleMutator::class, 'example_mutator');
+
+        $model = new ExampleMutatorModel([
+            'mutable_property' => null,
+        ]);
+
+        $provider = $this->fakeProvider();
+
+        (new PropertyMapper($model, PropertyMapper::ENTITY_ORGANIZATION, $provider))
+            ->setInbound([
+                'inbound_mutable_property' => '_bar',
+            ]);
+
+        $this->assertEquals('bar', $model->mutable_property);
+    }
+
+    public function test_it_instantiates_mutators_with_options()
+    {
+        config([
+            'relay.providers.fake_provider.organization_fields' => [
+                'mutable_property' => 'mutable_property::example_configurable_mutator,Config Value',
+            ],
+        ]);
+
+        Relay::registerMutator(ExampleConfigurableMutator::class, 'example_configurable_mutator');
+
+        $model = new ExampleMutatorModel([
+            'mutable_property' => 'foo',
+        ]);
+
+        $provider = $this->fakeProvider();
+
+        $outbound = (new PropertyMapper($model, PropertyMapper::ENTITY_ORGANIZATION, $provider))->mapOutbound();
+
+        $this->assertEquals('Config Value', $outbound['mutable_property']);
+    }
 }
 
 class ExamplePropertyModel extends Model
@@ -139,5 +247,43 @@ class ExamplePropertyModel extends Model
     public function setProperty4AttributeForRelay($value = null)
     {
         $this->attributes['property_4'] = substr($value, 1);
+    }
+}
+
+class ExampleMutatorModel extends Model
+{
+    protected $guarded = [];
+}
+
+class ExampleMutator implements MutatorContract
+{
+    public function outbound($value)
+    {
+        return "_{$value}";
+    }
+
+    public function inbound($value)
+    {
+        return substr($value, 1);
+    }
+}
+
+class ExampleConfigurableMutator implements MutatorContract
+{
+    private $configValue;
+
+    public function __construct($configValue)
+    {
+        $this->configValue = $configValue;
+    }
+
+    public function outbound($value)
+    {
+        return $this->configValue;
+    }
+
+    public function inbound($value)
+    {
+        return $this->configValue;
     }
 }

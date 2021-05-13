@@ -4,6 +4,9 @@ namespace TheTreehouse\Relay;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use ReflectionClass;
+use TheTreehouse\Relay\Exceptions\PropertyException;
+use TheTreehouse\Relay\Facades\Relay;
 
 class PropertyMapper
 {
@@ -56,14 +59,20 @@ class PropertyMapper
     {
         $properties = [];
 
-        foreach ($this->getMap() as $modelKey => $providerKey) {
-            if ($accessorMethod = $this->generateModelMethodName('get', $modelKey)) {
-                $properties[$providerKey] = $this->entity->{$accessorMethod}($this->entity->{$modelKey});
+        foreach ($this->getMap() as $modelKey => $providerKeyMutator) {
+            [$providerKey, $mutator] = $this->processProviderKeyMutator($providerKeyMutator);
 
-                continue;
+            $value = $this->entity->{$modelKey};
+
+            if ($mutator) {
+                $value = $mutator->outbound($value);
             }
 
-            $properties[$providerKey] = $this->entity->{$modelKey};
+            if ($accessorMethod = $this->generateModelMethodName('get', $modelKey)) {
+                $value = $this->entity->{$accessorMethod}($value);
+            }
+
+            $properties[$providerKey] = $value;
         }
 
         return $properties;
@@ -79,12 +88,20 @@ class PropertyMapper
     {
         $properties = [];
 
-        foreach ($this->getMap() as $modelKey => $providerKey) {
+        foreach ($this->getMap() as $modelKey => $providerKeyMutator) {
+            [$providerKey, $mutator] = $this->processProviderKeyMutator($providerKeyMutator);
+
             if (! isset($inboundProperties[$providerKey])) {
                 continue;
             }
 
-            $properties[$modelKey] = $inboundProperties[$providerKey];
+            $value = $inboundProperties[$providerKey];
+
+            if ($mutator) {
+                $value = $mutator->inbound($value);
+            }
+
+            $properties[$modelKey] = $value;
         }
 
         return $properties;
@@ -163,5 +180,73 @@ class PropertyMapper
         }
 
         return null;
+    }
+
+    /**
+     * Given a provider key and optional mutator pair, split into the string key and the
+     * mutator instance, if provided
+     *
+     * @return array
+     */
+    private function processProviderKeyMutator($providerKeyMutator): array
+    {
+        if (! is_array($providerKeyMutator)) {
+            $providerKeyMutator = explode('::', $providerKeyMutator);
+        }
+        
+        $key = $providerKeyMutator[0] ?? null;
+        $mutatorReference = $providerKeyMutator[1] ?? null;
+
+        if (! $key) {
+            throw PropertyException::badMappingLocalKey($this->provider, $key);
+        }
+
+        if (! $mutatorReference) {
+            return [$key, null];
+        }
+
+        $args = [];
+
+        if (is_string($mutatorReference)) {
+            $args = explode(',', $mutatorReference);
+            $mutatorReference = array_shift($args);
+        }
+
+        if (! $mutator = Relay::resolveMutatorClass($mutatorReference)) {
+            throw PropertyException::badMutator($this->provider, $mutatorReference);
+        }
+
+        $resolvedMutator = app($mutator, $this->keyConstructionParameters($mutator, $args));
+
+        return [$key, $resolvedMutator];
+    }
+
+    /**
+     * Given a class string and array of numerically indexed parameters, key those
+     * parameters by parameter name, based off the construction method of the class.
+     *
+     * @param string $class
+     * @param array $parameters
+     * @return array
+     */
+    private function keyConstructionParameters(string $class, array $parameters): array
+    {
+        if (! $parameters || ! method_exists($class, '__construct')) {
+            return $parameters;
+        }
+
+        $constructionParameters = (new ReflectionClass($class))
+            ->getMethod('__construct')
+            ->getParameters();
+
+        $keyed = [];
+
+        for ($i = 0; $i < count($constructionParameters); $i++) {
+            $constructionParameter = $constructionParameters[$i];
+
+            $keyed[$constructionParameter->getName()] = $parameters[$i];
+        }
+
+        return $keyed;
     }
 }

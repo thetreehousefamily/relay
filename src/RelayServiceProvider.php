@@ -5,6 +5,8 @@ namespace TheTreehouse\Relay;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use TheTreehouse\Relay\Commands\RelayCommand;
+use TheTreehouse\Relay\Mutators\DateMutator;
+use TheTreehouse\Relay\Mutators\DateTimeMutator;
 use TheTreehouse\Relay\Observers\ContactObserver;
 use TheTreehouse\Relay\Observers\OrganizationObserver;
 use TheTreehouse\Relay\Support\Contracts\RelayContract;
@@ -42,7 +44,7 @@ class RelayServiceProvider extends PackageServiceProvider
          *
          * @var \TheTreehouse\Relay\Relay $relay
          */
-        $relay = $this->app->make('relay');
+        $relay = $this->app->make(RelayContract::class);
 
         if (config('relay.contact')) {
             $relay->useContactModel(config('relay.contact'));
@@ -55,5 +57,14 @@ class RelayServiceProvider extends PackageServiceProvider
 
             ((string) $relay->organizationModel())::observe(OrganizationObserver::class);
         }
+
+        $this->registerDefaultMutators($relay);
+    }
+
+    private function registerDefaultMutators(RelayContract $relay)
+    {
+        $relay
+            ->registerMutator(DateMutator::class, 'date')
+            ->registerMutator(DateTimeMutator::class, 'datetime');
     }
 }

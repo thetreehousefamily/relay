@@ -27,6 +27,24 @@ interface RelayContract
     public function getProviders(): array;
 
     /**
+     * Register a mutator class, optionally providing an alias
+     *
+     * @param string $mutator
+     * @param string|null $alias
+     * @return self
+     */
+    public function registerMutator(string $mutator, string $alias = null): self;
+
+    /**
+     * Resolve an alias, Object or class to a valid Mutator class. If the provided $mutator value
+     * is not valid for any reason, null is returned.
+     *
+     * @param mixed $mutator
+     * @return string|null
+     */
+    public function resolveMutatorClass($mutator):? string;
+
+    /**
      * Use the given contact model
      *
      * @param string $class
